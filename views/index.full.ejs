@@ -1,0 +1,206 @@
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Angular App!</title>
+    <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="/stylesheets/app.css">
+    <link rel="stylesheet" href="/bower_components/angular-ui-select/dist/select.css">
+    <script src="/bower_components/angular/angular.js"></script>
+    <script src="/bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
+    <script src="/javascripts/message-center.js"></script>
+    <script src="/bower_components/angular-resource/angular-resource.js"></script>
+    <script src="/bower_components/angular-ui-select/dist/select.js"></script>
+    <script src="/bower_components/angular-sanitize/angular-sanitize.js"></script>
+    <script src="/bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+    <script src="/bower_components/angular-cookies/angular-cookies.js"></script>
+    <script src="/javascripts/angularApp.js"></script>
+    <style type="text/css">
+      .winner_highlight {
+        background-color:green;
+      }
+      ul
+      {
+      list-style-type: none;
+      }
+      </style>
+  </head>
+  <body ng-app="pplChallenge">
+    <div  ng-controller="ApplicationController">
+      <div id="navbar-example" class="navbar navbar-inverse navbar-static" role="navigation" ng-controller="NavBarCtrl">
+	<div class="container-fluid">
+	  <div class="navbar-header">
+	    <button class="navbar-toggle" type="button" ng-click="isCollapsed = !isCollapsed">
+	      <span class="sr-only">Toggle navigation</span>
+	      <span class="icon-bar"></span>
+	      <span class="icon-bar"></span>
+	      <span class="icon-bar"></span>
+	    </button>
+	    <a class="navbar-brand" href="#">PPL Challenge App</a>
+	  </div>
+	  <div collapse="isCollapsed" class="navbar-collapse bs-js-navbar-collapse">
+	    <ul class="nav navbar-nav">
+	      <li ng-if="isAuthenticated"><a href="#/hide_menu/user_list">User List</a></li>
+	      <li ng-if="isAuthenticated"><a href="#/hide_menu/list_machines">List Machines</a></li>
+	      <li ng-if="isAuthenticated"><a href="#/hide_menu/add_matches">Add Match</a></li>
+	      <li ng-if="!isAuthenticated"><a href="#/hide_menu/login">Login</a></li>
+	    </ul>
+	  </div>
+	</div><!-- /.container-fluid -->
+      </div>
+<!--      <center>-->
+	<div class="row">
+	  <div class="col-md-6 col-md-offset-3">
+	    <ui-view></ui-view>
+	    <div style='height:70px;width:100%'><mc-messages></mc-messages></div>    
+	  </div>
+	</div>
+	
+
+<script type="text/ng-template" id="/main.html">
+  <h1>HI</h1>
+</script>
+<script type="text/ng-template" id="/login.html">
+  <div class='container-fluid'>
+    <form name="loginForm" ng-controller="LoginController"
+	  ng-submit="login(credentials)" novalidate>
+      <div class="input-group">
+	<input type="text" name="local[username]" id="username"
+	       ng-model="credentials.username" class="form-control">
+	<span  class="input-group-addon" id="basic-addon4">Player Name</span>
+      </div>
+      <br>
+      <div class="input-group">
+	<input type="password" name="local[password]" id="password"
+	       ng-model="credentials.password" class="form-control">
+	<span  class="input-group-addon" id="basic-addon4">Password</span>
+      </div>
+      <br>
+      <button class="btn btn-default" type="submit">Login</button>
+    </form>
+  </div>
+  <br>
+  To create an account, click <a href="/#/hide_menu/add_users"> here </a>.
+</script>
+<script type="text/ng-template" id="/list_machines.html">
+  <div  ng-controller="AddUserFormCtrl">
+    <div class="input-group">
+      <input type="text" ng-model="machine_list_query" class="form-control"/> 
+      <span class="input-group-addon" id="basic-addon2">Machine Name</span>
+    </div>
+    <br>
+    <ul class="list-group">
+      <!--      <li class="list-group-item"  ng-repeat="validMachine in validMachines|orderBy: 'machine_name'|filter: machine_list_query|limitTo: 50"> -->
+      <li class="list-group-item"  ng-repeat="validMachine in filtered = validMachines|filter: machine_list_query|startFrom: (currentPage-1)*itemsPerPage|limitTo: itemsPerPage"> 
+	<a href="http://ipdb.org/machine.cgi?id={{validMachine.key}}">{{validMachine.machine_name}}</a>
+      </li>
+    </ul>
+    <br>
+    <pagination ng-change="pageChanged()" total-items="validMachinesTotalItems" ng-model="currentPage" max-size="maxSize" class="pagination-sm" boundary-links="true" rotate="false" num-pages="numPages"></pagination>
+  </div>
+</script>
+<script type="text/ng-template" id="/add_matches.html">
+ <center>
+      <div class='container-fluid' ng-controller="AddUserFormCtrl">
+
+	<div class="input-group">
+	    <input type="text" ng-model="selectedPlayerOne" typeahead-select-on-exact="true" typeahead="user as user.local.username for user in validUsers | filter:{local:{username:$viewValue}}" class="form-control"  typeahead-select-on-blur="true">
+
+	    <span  class="input-group-addon" id="basic-addon2">Winning Player <span ng-if="submitted" class="badge">+{{winner_ante}}</span></span>
+</div>
+<br>
+	<div class="input-group">
+	  <input   type="text" ng-model="selectedPlayerTwo" typeahead-select-on-exact="true" typeahead="user as user.local.username for user in validUsers | filter:{local: {username:$viewValue}}" class="form-control" typeahead-select-on-blur="true">
+	  <span class="input-group-addon" id="basic-addon2">Losing Player&nbsp;&nbsp; <span ng-if="submitted" class="badge">-{{loser_ante}}</span></span>
+	</div>
+	<br>
+	<div class="input-group">
+	  <input type="text"  ng-model="selectedMachine" typeahead-select-on-exact="true" typeahead="machine as machine.machine_name for machine in validMachines | filter:{machine_name:$viewValue}" class="form-control" typeahead-min-length="3" typeahead-select-on-blur="true">
+	  <span class="input-group-addon" id="basic-addon2"><span>Pinball Machine Name</span></span>
+	</div>
+<br>
+
+<input class="btn btn-default" type="submit" value="Add" ng-click="addMatch()"/>
+      </div>
+<br>
+
+
+</script>
+<script type="text/ng-template" id="/add_users.html">
+  <div class='container-fluid'>
+    <form name="loginForm" ng-controller="LoginController"
+	  ng-submit="addUser(credentials)" novalidate>
+      <div class="input-group">
+	<input type="text" id="username"
+	       ng-model="credentials.username" class="form-control">
+	<span  class="input-group-addon" id="basic-addon4">Player Name</span>
+      </div>
+      <br>
+      <div class="input-group">
+	<input type="password" id="password"
+	       ng-model="credentials.password" class="form-control">
+	<span  class="input-group-addon" id="basic-addon4">Password</span>
+      </div>
+      <br>
+      <div class="input-group">
+	<input type="text" id="email"
+	       ng-model="credentials.password" class="form-control">
+	<span  class="input-group-addon" id="basic-addon4">Email Address</span>
+      </div>
+      <span style='color:red'><small>(Optional)</small></span>
+      <br>
+      <button class="btn btn-default" type="submit">Create Account</button>
+    </form>
+  </div>
+</script>
+<script type="text/ng-template" id="/user_list.html">
+  <div  ng-controller="AddUserFormCtrl">
+    <div class="input-group">
+      <input type="text" ng-model="user_list_query" class="form-control"/> 
+      <span class="input-group-addon" id="basic-addon2">Player Name</span>
+    </div>
+    <br>
+    
+    <ul class="list-group">
+      <li class="list-group-item text-left"  ng-repeat="validUser in validUsers|orderBy: '-points'|filter: user_list_query">
+	    <span ng-if="validUser.matches_played >= 5" class="badge">{{validUser.points}}</span>
+	    <span ng-if="validUser.matches_played < 5" style='background-color:red' class="badge">{{validUser.points}}</span>
+	    <span>
+	      <a href='#/hide_menu/user/{{validUser._id}}'>{{validUser.local.username}}</a>
+	      <img width=25 src='https://cdn3.iconfinder.com/data/icons/beos/BeOS_person.png'>
+	    </span>
+	    <span ng-if="validUser.matches_played < 5" style='color:red'><small>(less than 5 matches)</small></span>
+      </li>
+    </ul>      
+  </div>
+</script>
+
+
+<script type="text/ng-template" id="/test.html">
+  {{testingVariable}}
+</script>
+
+<script type="text/ng-template" id="/user.html">
+  <div  ng-controller="AddUserFormCtrl">
+    <ul>
+      <li  ng-repeat="myMatch in listOfMatchesForUser">
+	<div class="panel  panel-primary">
+	  <div class="panel-heading">
+	    <span class="text-left"><b>{{myMatch.machine_name}}</b></span>
+	    <span style='float:right'>{{myMatch.dateOfMatch|date:'shortDate'}}</span>
+	  </div>
+	  <div class="panel-body">
+	    <span class='lead'>{{myMatch.player_one_user_name}}</span>
+	    <img height="25" src='https://cdn4.iconfinder.com/data/icons/award-and-trophy-2/75/Trophy_award_cup-01-512.png'>
+	    <br>
+	    vs<br>
+	    <span class='lead'>{{myMatch.player_two_user_name}}</span>
+	  </div>
+	</div>
+      </li>
+    </ul>
+  </div>
+</div>
+</script>
+</div>
+</body>
+</html>

@@ -1,0 +1,209 @@
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Angular App!</title>
+    <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="/stylesheets/app.css">
+    <link rel="stylesheet" href="/bower_components/angular-ui-select/dist/select.css">
+    <script src="/bower_components/angular/angular.js"></script>
+    <script src="/bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
+    <script src="/javascripts/message-center.js"></script>
+    <script src="/bower_components/angular-resource/angular-resource.js"></script>
+    <script src="/bower_components/angular-ui-select/dist/select.js"></script>
+    <script src="/bower_components/angular-sanitize/angular-sanitize.js"></script>
+    <script src="/bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+    <script src="/javascripts/angularApp.js"></script>
+    <style type="text/css">
+      .winner_highlight {
+        background-color:green;
+      }
+      ul
+      {
+      list-style-type: none;
+      }
+      </style>
+  </head>
+  <body ng-app="pplChallenge">    
+     <div id="navbar-example" class="navbar navbar-inverse navbar-static" role="navigation" ng-controller="NavBarCtrl">
+      <div class="container-fluid">
+	<div class="navbar-header">
+	  <button class="navbar-toggle" type="button" ng-click="isCollapsed = !isCollapsed">
+	    <span class="sr-only">Toggle navigation</span>
+	    <span class="icon-bar"></span>
+	    <span class="icon-bar"></span>
+	    <span class="icon-bar"></span>
+	  </button>
+	  <a class="navbar-brand" href="#">PPL Challenge App</a>
+	</div>
+	<div collapse="isCollapsed" class="navbar-collapse bs-js-navbar-collapse">
+	  <ul class="nav navbar-nav">
+	    <li><a href="#/hide_menu/add_users">Add Users</a></li>
+	    <li><a href="#/hide_menu/user_list">User List</a></li>
+	    <li><a href="#/hide_menu/add_machines">Add Machines</a></li>
+	    <li><a href="#/hide_menu/add_matches">Add Match</a></li>
+	  </ul>
+	</div>
+      </div><!-- /.container-fluid -->
+    </div>
+
+    <div style='height:70px;width:100%'><mc-messages></mc-messages></div>    
+<center>
+<div class="row">
+  <div class="col-md-6 col-md-offset-3">
+    <ui-view></ui-view>
+  </div>
+</div>
+
+<script type="text/ng-template" id="/main.html">
+ <center>
+  <div class="page-header">
+    <h1>PPL Challenge App</h1>
+  </div>
+ Welcome to the PPL Challenge App.  Click one of the links to get started.
+ </center>
+</script>
+<script type="text/ng-template" id="/add_machines.html">
+  <center>
+  <div class="page-header">
+    <h1>PPL Challenge App</h1>
+  </div>
+  <div  ng-controller="AddUserFormCtrl">
+    <form novalidate class="simple-form">
+      Machine: <input type="text" ng-model="machine_name" /> 
+      <input type="button" ng-click="addMachine()" value="Add" />
+    </form>
+    <h2>List of valid Machines</h2>
+    <ul>
+      <li ng-repeat="validMachine in validMachines">
+	<p>{{validMachine.machine_name}}</p>
+      </li>
+    </ul>    
+  </div>
+  </center>
+</script>
+<script type="text/ng-template" id="/add_matches.html">
+ <center>
+  <div class="page-header">
+    <h1>PPL Challenge App</h1>
+  </div>
+ <form>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-md-1" style='padding-top:0px'> WINNER  </div>
+<!--      <div class="col-md-1"><input ng-required="!match_player_won" type="radio" ng-model="match_player_won" value="p1" /> Won</div> -->
+      <div class="col-md-1">  
+	<ui-select ng-model="selectedPlayerOne.selected"
+		   theme="bootstrap"
+		   ng-disabled="disabled"
+		   reset-search-input="false"
+		   style="width: 300px;"
+		   title="Player 1 : ">
+	  <ui-select-match placeholder="Enter a player name...">{{$select.selected.user_name}}</ui-select-match>
+	  <ui-select-choices repeat="user in validUsers | filter: $select.search">
+	    <div ng-bind-html="user.user_name | highlight: $select.search"></div>
+	  </ui-select-choices>
+	</ui-select>
+      </div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-1" style='padding-top:0px'> LOOSER </div>
+<!--      <div class="col-md-1"><input ng-required="!match_player_won" type="radio" ng-model="match_player_won" value="p2" /> Won</div> -->
+      <div class="col-md-1">  
+	<ui-select ng-model="selectedPlayerTwo.selected"
+		   theme="bootstrap"
+		   ng-disabled="disabled"
+		   reset-search-input="false"
+		   style="width: 300px;"
+		   title="Player 2 : ">
+	  <ui-select-match placeholder="Enter a player name...">{{$select.selected.user_name}}</ui-select-match>
+	  <ui-select-choices repeat="user in validUsers | filter: $select.search">
+	    <div ng-bind-html="user.user_name | highlight: $select.search"></div>
+	  </ui-select-choices>
+	</ui-select>
+      </div>
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="row">
+	<div class="col-md-1" style='padding-top:10px'> MACHINE </div>
+	<div class="col-md-1">  
+	  <ui-select ng-model="selectedMachine.selected"
+		     theme="bootstrap"
+		     ng-disabled="disabled"
+		     reset-search-input="false"
+		     style="width: 300px;"
+		     title="Player 1 : ">
+	    <ui-select-match placeholder="Enter a machine name...">{{$select.selected.machine_name}}</ui-select-match>
+	    <ui-select-choices repeat="machine in validMachines | filter: $select.search">
+	      <div ng-bind-html="machine.machine_name | highlight: $select.search"></div>
+	    </ui-select-choices>
+	  </ui-select>
+	</div>
+      </div>
+    </div>
+    <form>
+	<input type="submit" value="Add" ng-click="addMatch()"/>
+
+      <br><br><br>
+     <li ng-repeat="validMatch in validMatches|limitTo:20">
+       <div style='margin:5px;border-style:solid;border-width:0px;border-bottom-width:1px'><p> <b>{{validMatch.machine_name}}</b> </p> <span>  {{validMatch.player_one_user_name}}</span> | <span>{{validMatch.player_two_user_name}}</span> </div>
+     </li>
+    </ul>
+</script>
+<script type="text/ng-template" id="/add_users.html">
+ <center>
+  <div class="page-header">
+    <h1>PPL Challenge App</h1>
+  </div>
+  <div  ng-controller="AddUserFormCtrl">
+    <form class="simple-form" ng-submit="addUser()" novalidate>
+	Name: <input type="text" ng-model="user_name" name="user_name"  ng-model-options="{ debounce: 250 }"/> 
+	<input type="submit"  value="Add" />
+      </form>
+      <h2>List of valid players</h2>
+      <ul>
+	<li ng-repeat="validUser in validUsers">
+	  <p><a href='#/user/{{validUser._id}}'>{{validUser.user_name}}</a> -- wins : {{validUser.wins}} -- losses : {{validUser.losses}}</p>
+	</li>
+      </ul>      
+  </div>
+ </center>
+</script>
+<script type="text/ng-template" id="/user_list.html">
+ <center>
+  <div class="page-header">
+    <h1>PPL Challenge App</h1>
+  </div>
+  <div  ng-controller="AddUserFormCtrl">
+	Player Name: <input type="text" ng-model="user_list_query" /> 
+      <h2>List of valid players</h2>
+      <ul>
+	<li ng-repeat="validUser in validUsers|filter: user_list_query">
+	  <p><a href='#/user/{{validUser._id}}'>{{validUser.user_name}}</a> -- wins : {{validUser.wins}} -- losses : {{validUser.losses}}</p>
+	</li>
+      </ul>      
+  </div>
+ </center>
+</script>
+
+
+<script type="text/ng-template" id="/user.html">
+ <center>
+  <div class="page-header">
+    <h1>PPL Challenge App</h1>
+  </div>
+  <div  ng-controller="AddUserFormCtrl">
+    <ul style='list-style-type:none'>
+      <li ng-repeat="myMatch in listOfMatchesForUser">
+	<span >{{myMatch.player_one_user_name}}</span> vs <span>{{myMatch.player_two_user_name}} on {{myMatch.machine_name}}</span>	
+      </li>
+    </ul>
+
+  </div>
+</script>
+  </body>
+</html>

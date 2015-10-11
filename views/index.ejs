@@ -1,0 +1,417 @@
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Angular App!</title>
+    <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="/stylesheets/app.css">
+    <link rel="stylesheet" href="/stylesheets/animate.css">
+    <link rel="stylesheet" href="/bower_components/angular-ui-select/dist/select.css">
+    <link rel="stylesheet" href="/bower_components/angular-ui-notification/dist/angular-ui-notification.min.css">
+    <script src="/bower_components/angular/angular.js"></script>
+    <script src="/bower_components/angular-ui-notification/dist/angular-ui-notification.min.js"></script>
+    <script src="/bower_components/angular-animate/angular-animate.js"></script>
+    <script src="/bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
+    <script src="/javascripts/message-center.js"></script>
+    <script src="/bower_components/angular-resource/angular-resource.js"></script>
+    <script src="/bower_components/angular-ui-select/dist/select.js"></script>
+    <script src="/bower_components/angular-sanitize/angular-sanitize.js"></script>
+    <script src="/bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+    <script src="/bower_components/angular-cookies/angular-cookies.js"></script>
+    <script src="/bower_components/angular-autodisable/angular-autodisable.js"></script>
+    <script src="/javascripts/angularApp.js"></script>
+
+    <style type="text/css">
+      .winner_highlight {
+        background-color:green;
+      }
+
+      ul
+      {
+      list-style-type: none;
+      }
+
+      .flashyTest {
+      background-color:red;
+      color:red;
+      }
+
+      .spinner-square {
+      background-color: #333;
+      -webkit-animation: sk-rotateplane 1.2s infinite ease-in-out;
+      animation: sk-rotateplane 1.2s infinite ease-in-out;
+      }
+
+      @-webkit-keyframes sk-rotateplane {
+      0% { -webkit-transform: perspective(120px) }
+      25% { -webkit-transform: perspective(120px) rotateY(180deg) }
+      50% { -webkit-transform: perspective(120px) rotateY(180deg) rotateX(180deg) }
+      75% { -webkit-transform: perspective(120px) rotateY(360deg)  rotateX(180deg) }
+      100% { -webkit-transform: perspective(120px) rotateY(360deg)  rotateX(360deg) }
+      }
+
+      @keyframes sk-rotateplane {
+      0% {
+      transform: perspective(120px) rotateX(0deg) rotateY(0deg);
+      -webkit-transform: perspective(120px) rotateX(0deg) rotateY(0deg)
+      } 25% {
+      transform: perspective(120px) rotateX(-180.1deg) rotateY(0deg);
+      -webkit-transform: perspective(120px) rotateX(-180.1deg) rotateY(0deg)
+      } 50% {
+      transform: perspective(120px) rotateX(-180.1deg) rotateY(-179.9deg);
+      -webkit-transform: perspective(120px) rotateX(-180.1deg) rotateY(-179.9deg)
+      } 75% {
+      transform: perspective(120px) rotateX(-360deg) rotateY(-179.9deg);
+      -webkit-transform: perspective(120px) rotateX(-360deg) rotateY(-179.9deg);
+      } 100% {
+      transform: perspective(120px) rotateX(-360deg) rotateY(-359deg);
+      -webkit-transform: perspective(120px) rotateX(-360deg) rotateY(-359deg);
+      }
+      }
+      
+      .spinner-circle {
+      background-color: #333;
+      -webkit-animation: sk-scaleout 1.0s infinite ease-in-out;
+      animation: sk-scaleout 1.0s infinite ease-in-out;
+      }
+
+      @-webkit-keyframes sk-scaleout {
+      0% { -webkit-transform: scale(0) }
+      100% {
+      -webkit-transform: scale(1.0);
+      opacity: 0;
+      }
+      }
+
+      @keyframes sk-scaleout {
+      0% {
+      -webkit-transform: scale(0);
+      transform: scale(0);
+      } 100% {
+      -webkit-transform: scale(1.0);
+      transform: scale(1.0);
+      opacity: 0;
+      }
+      }
+    </style>
+  </head>
+  <body ng-app="pplChallenge">
+    <div  ng-controller="ApplicationController">
+      <div id="navbar-example" class="navbar navbar-inverse navbar-static" role="navigation" ng-controller="NavBarCtrl">
+	<div class="container-fluid">
+	  <div class="navbar-header">
+	    <button class="navbar-toggle" type="button" ng-click="isCollapsed = !isCollapsed;">
+	      <span class="sr-only">Toggle navigation</span>
+	      <span class="icon-bar"></span>
+	      <span class="icon-bar"></span>
+	      <span class="icon-bar"></span>
+	    </button>
+	    
+	    <a class="navbar-brand" href="#/"><img style='margin-top:-20' width=65 src='/images/pinball.png'></a>
+	      <ul collapse="isNotCollapsed" class="navbar-collapse nav navbar-nav" style="border-top:0;box-shadow:inset 0 0 0;padding-left:0">
+		<li><a href="#/" style="padding-left:0">Challenge App</a></li>
+	      </ul>
+	  </div>
+
+	  <div collapse="isCollapsed" class="navbar-collapse bs-js-navbar-collapse">
+	    <ul class="nav navbar-nav">
+	      <li ng-if="isUserAuthenticated"><a href="#/application/user_list">User List</a></li>
+	      <li ng-if="isUserAuthenticated"><a href="#/application/list_machines">List Machines</a></li>
+	      <li ng-if="isUserAuthenticated"><a href="#/application/add_matches">Add Match</a></li>
+	      <li ng-if="!isUserAuthenticated"><a href="#/application/login">Login</a></li>
+	      
+	      <li ng-if="isUserAuthenticated"><a href="#/application/">Profile</a></li>
+	      <li ng-if="isUserAuthenticated"><a href="#/application/challenges">Challenges</a></li>
+	      <li><a href="#/application/help">Help!</a></li>
+	    </ul>
+	  </div>
+	</div><!-- /.container-fluid -->
+      </div>
+      <ui-view/>
+      <script type="text/ng-template" id="/challenges.html">
+	<div class="container-fluid">
+	  <div class="row">
+	    <div class="col-md-6 col-md-offset-3">
+	      <div ng-controller="ChallengeController">
+		<div class="panel  panel-primary">
+		  <div class="panel-heading">
+		    <span>List of challenges issued by other players</span>
+		  </div>
+		  <div class="panel-body">	  
+		    <div ng-repeat="curChallenge in filtered = validChallenges|startFrom: (challengedCurrentPage-1)*challengedItemsPerPage|filter:{completed:false}|filter:{challenged_id:user_info._id}|limitTo: challengedItemsPerPage">
+		      {{curChallenge.challenger_name}} challenged you to a game<span ng-if="curChallenge.machine_name===undefined">!</span>
+		      <span ng-if="curChallenge.machine_name!==undefined"> on {{curChallenge.machine_name}}!</span>
+		    </div>
+		    <pagination ng-if="validUserChallengedTotalItems > challengedItemsPerPage" ng-change="pageChanged()" total-items="$parent.validUserChallengedTotalItems" ng-model="$parent.challengedCurrentPage" max-size="$parent.challengedMaxSize" class="pagination-sm" boundary-links="true" rotate="false" num-pages="$parent.challengedNumPages" items-per-page="$parent.challengedItemsPerPage"></pagination>	      
+		  </div>
+		</div>
+		
+		<div class="panel  panel-primary">
+		  <div class="panel-heading">
+		    <span>List of challenges you issued</span>
+		  </div>
+		  <div class="panel-body">	  
+		    <div ng-repeat="curChallenge in filtered = validChallenges|startFrom: (challengesCurrentPage-1)*challengesItemsPerPage|filter:{completed:false}|filter:{challenger_id:user_info._id}|limitTo: challengesItemsPerPage">
+		      {{curChallenge.challenged_name}} was challenged by you to a game<span ng-if="curChallenge.machine_name===undefined">!</span>
+		      <span ng-if="curChallenge.machine_name!==undefined"> on {{curChallenge.machine_name}}!</span>
+		    </div>
+		    <pagination ng-if="validUserChallengesTotalItems > challengesItemsPerPage" ng-change="pageChanged()" total-items="$parent.validUserChallengesTotalItems" ng-model="$parent.challengesCurrentPage" max-size="$parent.challengesMaxSize" class="pagination-sm" boundary-links="true" rotate="false" num-pages="$parent.challengesNumPages" items-per-page="$parent.challengesItemsPerPage"></pagination>	      
+		  </div>
+		</div>
+		<div class="panel  panel-primary">
+		  <div class="panel-heading">
+		    <span>Make a challenge</span>
+		  </div>
+		  <div class="panel-body">
+		    <span style='vertical-align:middle'>
+		      <form ng-submit="submitChallenge()" ng-autodisable ng-autodisable-class="spinner-square" ng-use-jqlite>			
+			
+			<input type="text"  ng-model="challenger_machine" typeahead="machine as machine.machine_name for machine in validMachinesList | filter:{machine_name:$viewValue}" class="form-control" typeahead-min-length="3" typeahead-select-on-blur="true" placeholder="Machine Name (optional)" typeahead-no-results="noResultsMachine" />
+			<input type="text" ng-model="challenger_user" typeahead="user as user.local.username for user in validUsersList | filter:{local:{username:$viewValue}}" class="form-control" typeahead-select-on-blur="true" placeholder="Name of Challenger" typeahead-no-results="noResultsUser" required/>
+			<button type="submit" class="btn btn-default" >
+			  Issue Challege
+			</button>
+		      </form>	      
+		    </span>
+		  </div>
+		</div>
+	      </div>
+	    </div>
+	  </div>
+	</div>	
+      </script>
+      <script type="text/ng-template" id="/login.html">
+	<div class="container-fluid">
+	  <div class="row">
+	    <div class="col-md-6 col-md-offset-3">
+	      <form name="loginForm" ng-controller="LoginController"
+		    ng-submit="login(credentials)" ng-autodisable ng-autodisable-class="spinner-square" ng-use-jqlite>
+		<div class="input-group">
+		  <input type="text" name="local[username]" id="username"
+			 ng-model="credentials.username" class="form-control" required>
+		  <span  class="input-group-addon" id="basic-addon4">Player Name</span>
+		</div>
+		<br>
+		<div class="input-group">
+		  <input type="password" name="local[password]" id="password"
+			 ng-model="credentials.password" class="form-control" required>
+		  <span  class="input-group-addon" id="basic-addon4">Password</span>
+		</div>
+		<br>
+		<button class="btn btn-default" type="submit">Login</button>
+	      </form>
+	      <br>
+	      To create an account, click <a href="/#/application/add_users"> here </a>.
+	    </div>
+	  </div>
+	</div>
+      </script>
+      <script type="text/ng-template" id="/main.html">
+	<div class="container-fluid">
+	  <div class="row">
+	    <div class="col-md-6 col-md-offset-3">
+	      <div ng-controller="MainController">
+		<div class="panel  panel-primary">
+		  <div class="panel-heading">
+		    <span>{{user.local.username}}</span>
+		  </div>
+		  <div class="panel-body">
+		    <div>Wins : {{user.wins}} <br>
+		      Losses : {{user.losses}} <br>
+		      Matches Played : {{user.matches_played}} <br>
+		      Rank : {{rank}} <br>
+		      Points : {{user.points}}<br>
+		      <span ng-if="user.local.email">Email Address : {{user.local.email}}</span>
+		    </div>
+		  </div>
+		</div>
+		<div class="panel  panel-primary" ng-if="user.local.email === undefined">
+		  <div class="panel-heading">
+		    <span>Set Email Address</span>
+		  </div>
+		  <div class="panel-body">
+		    If you want to recieve email alerts when you are challenged, please enter your email address here.<br><br>
+		    <form name="addEmailAddress" ng-controller="AddUserEmailController" 
+			  ng-submit="addEmail()" ng-autodisable ng-autodisable-class="spinner-square" ng-use-jqlite>
+		      <div class="input-group">
+			<input type="email" id="email"
+			       ng-model="$parent.newEmail" class="form-control" required email>
+			<span  class="input-group-addon">Email Address</span>
+		      </div>
+		      <br><button class="btn btn-default" type="submit">Submit</button>
+		    </form>	      
+		  </div>
+		</div>
+		
+		<div  ng-controller="UserProfileMatchController">
+		  <div class="panel  panel-primary">
+		    <div class="panel-heading">
+		      Past Matches
+		    </div>
+		    <div class="panel-body">
+		      <ul class="list-group">
+			<li class="list-group-item" ng-repeat="myMatch in validMatchesList|startFrom: (currentPage-1)*itemsPerPage|limitTo: itemsPerPage">
+			  <h4 class="list-group-item-heading">{{myMatch.machine_name}}</h4>
+			  <br>
+			  <div class='container-fluid list-group-item-text'>
+			    <img height="25" src='https://cdn4.iconfinder.com/data/icons/award-and-trophy-2/75/Trophy_award_cup-01-512.png'>{{myMatch.player_one_user_name}} VS {{myMatch.player_two_user_name}}
+			    <br>
+			  </div>
+			</li>
+		      </ul>
+		     <pagination ng-if="validMatchesTotalItems > itemsPerPage" ng-change="pageChanged()" total-items="$parent.validMatchesTotalItems" ng-model="$parent.currentPage" max-size="$parent.maxSize" class="pagination-sm" boundary-links="true" rotate="false" num-pages="$parent.numPages" items-per-page="$parent.itemsPerPage"></pagination>
+		    </div>
+		  </div>
+		</div>
+	      </div>
+	    </div>
+	  </div>	  
+      </script>
+      <script type="text/ng-template" id="/add_users.html">
+	<div class="container-fluid">
+	  <div class="row">
+	    <div class="col-md-6 col-md-offset-3">
+
+	      <form name="loginFormAddUser" ng-controller="AddUserFormController"
+		    ng-submit="addUser(credentials)" ng-autodisable ng-autodisable-class="spinner-square" ng-use-jqlite>
+		<div class="input-group">
+		  <input type="text" id="username"
+			 ng-model="credentials.username" class="form-control" required>
+		  <span  class="input-group-addon" id="basic-addon4">Player Name</span>
+		</div>
+		<br>
+		<div class="input-group">
+		  <input type="password" id="password"
+			 ng-model="credentials.password" class="form-control" required>
+		  <span  class="input-group-addon" id="basic-addon4">Password</span>
+		</div>
+		<br>
+		<div class="input-group">
+		  <input type="email" id="email"
+			 ng-model="credentials.email" class="form-control">
+		  <span  class="input-group-addon" id="basic-addon4">Email Address</span>
+		</div>
+		<span style='color:red'><small>(Optional)</small></span>
+		<br>
+		<button class="btn btn-default" type="submit">Create Account</button>
+	      </form>
+	    </div>
+	  </div>
+	</div>
+	
+      </script>
+      <script type="text/ng-template" id="/list_machines.html">
+	<div class="container-fluid">
+	  <div class="row">
+	    <div class="col-md-6 col-md-offset-3">
+	      <div  ng-controller="MachineListController">
+		<div class="input-group">
+		  <input type="text" ng-model="machine_list_query" class="form-control"/> 
+		  <span class="input-group-addon" id="basic-addon2">Machine Name</span>
+		</div>
+		<br>
+		<ul class="list-group">
+		  <li class="list-group-item"  ng-repeat="validMachine in filtered = validMachinesList|filter: machine_list_query|startFrom: (currentPage-1)*itemsPerPage|limitTo: itemsPerPage"> 
+		    <a href="http://ipdb.org/machine.cgi?id={{validMachine.key}}">{{validMachine.machine_name}}</a>
+		  </li>
+		</ul>
+		<br>
+		<pagination ng-if="validMachinesListTotalItems > itemsPerPage" ng-change="pageChanged()" total-items="$parent.validMachinesListTotalItems" ng-model="$parent.currentPage" max-size="$parent.maxSize" class="pagination-sm" boundary-links="true" rotate="false" num-pages="$parent.numPages"></pagination>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+      </script>
+      <script type="text/ng-template" id="/test.html">
+      </script>
+      <script type="text/ng-template" id="/user_list.html">
+	<div class="container-fluid">
+	  <div class="row">
+	    <div class="col-md-6 col-md-offset-3">
+	      
+	      <div  ng-controller="UserListController">
+		<div class="input-group">
+		  <input type="text" ng-model="user_list_query" class="form-control"/> 
+		  <span class="input-group-addon" id="basic-addon2">Player Name</span>
+		</div>
+		<br>
+		
+		<ul class="list-group">
+		  <li class="list-group-item"  ng-repeat="validUser in filtered = validUsersList|filter: user_list_query|orderBy: '-points'| startFrom: (currentPage-1)*itemsPerPage|limitTo: itemsPerPage"> 	    
+		    <span ng-if="validUser.matches_played >= 5" class="badge">{{validUser.points}}</span>
+		    <span ng-if="validUser.matches_played < 5" style='background-color:red' class="badge">{{validUser.points}}</span>
+		    <span>
+		      <a href='/#/application/user/{{validUser._id}}'>{{validUser.local.username}}</a>
+		      
+		      <span ng-repeat="badge in badges|filter: validUser._id">
+			<img uib-tooltip-html="badge.mouseover_string" width=25 src='{{badge.badge_img_url}}'>
+		      </span>
+		    </span>
+		    <span ng-if="validUser.matches_played < 5" style='color:red'><small>(less than 5 matches)</small></span>
+		  </li>
+		</ul>
+		<pagination ng-if="validUsersListTotalItems > itemsPerPage" ng-change="pageChanged()" total-items="$parent.validUsersListTotalItems" ng-model="$parent.currentPage" max-size="$parent.maxSize" class="pagination-sm" boundary-links="true" rotate="false" num-pages="$parent.numPages" items-per-page="$parent.itemsPerPage"></pagination>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+      </script>
+      <script type="text/ng-template" id="/add_matches.html">
+	<div class="container-fluid">
+	  <div class="row">
+	    <div class="col-md-6 col-md-offset-3">
+	      <form ng-controller="AddMatchesController" ng-autodisable ng-autodisable-class="spinner-square" ng-submit="addMatch()" ng-use-jqlite>
+		<div class="input-group">
+		  <input type="text" ng-model="selectedPlayerOne"  typeahead="user as user.local.username for user in validUsersList | filter:{local:{username:$viewValue}}" class="form-control"  typeahead-select-on-blur="true" typeahead-no-results='noResultsPlayerOne' required>
+		  
+		  <span  class="input-group-addon" id="basic-addon2">Winning Player <span ng-if="submitted" class="badge">+{{winner_ante}}</span></span>
+		</div>
+		<br>
+		<div class="input-group">
+		  <input   type="text" ng-model="selectedPlayerTwo"  typeahead="user as user.local.username for user in validUsersList | filter:{local: {username:$viewValue}}" class="form-control" typeahead-select-on-blur="true" typeahead-no-results='noResultsPlayerTwo' required>
+		  <span class="input-group-addon" id="basic-addon2">Losing Player&nbsp;&nbsp; <span ng-if="submitted" class="badge">-{{loser_ante}}</span></span>
+		</div>
+		<br>
+		<div class="input-group">
+		  <input type="text"  ng-model="selectedMachine"  typeahead="machine as machine.machine_name for machine in validMachinesList | filter:{machine_name:$viewValue}" class="form-control" typeahead-min-length="3" typeahead-select-on-blur="true" typeahead-no-results='noResultsMachine' required>
+		  <span class="input-group-addon" id="basic-addon2"><span>Pinball Machine Name</span></span>
+		</div>
+		<br>	  
+		<button type="submit" class="btn btn-default">Add</button>
+              </form>
+	    </div>
+	  </div>
+	</div>
+      </script>
+      <script type="text/ng-template" id="/help.html">
+	<div class="container-fluid">
+	<div ng-controller="HelpController">
+	  <h2><p style="padding:10px" class="bg-primary">How does scoring work?</p></h2>
+	There is some math ahead.  Don't worry though - the Challenge App takes care of it for you.
+	<br><br>When you first create your account, you start with 1400 points.  Each time you play another player, both you and the other player need to commit a certain number of points.  The number of points each player commits depends on the difference between your current points and your opponent's points - the player with more points will have to commit more points than the player with fewer points.  The combination of both players commited points will always be 32.  The loser of the match looses the amount they committed and the winner wins back the points they committed and the points committed by the loser.
+	<br><br>Below is an example to illustrate how this works.
+	<br><br>Below the example is a chart showing how many points a player needs to commit based on overall points differences.
+	<br><br>
+	<i>Aiton And Doug decide to play a game.  Aiton has 1489 points.  Doug has 1378 points.  Based on the difference between their scores ( 111 points ), Aiton needs to commit 21 points and Doug needs to commit 11 points.  Doug wins ( DO IT DOUG!!! ), so he wins back his 11 points and the 21 points that Aiton comitted.  Once the match is done and recorded, Aiton has 1468 points and Doug has 1399 points.</i>
+	<br><br>
+	<table class='table'>
+	  <tr><th>Difference Between Scores</th><th>Points Lower Ranked Player Commits</th><th>Points Higher Ranked Player Commits</th></tr>
+	  
+	  <tr ng-repeat="rangeInfo in ANTE_RANGES" >
+	    <td>{{rangeInfo.low_range}} - {{rangeInfo.high_range}} points</td>
+	    <td>{{rangeInfo.l_ante}}</td>
+	    <td>{{rangeInfo.h_ante}}</td>
+	  </tr>
+	  
+	</table>
+	<h2><p style="padding:10px" class="bg-primary">Why is my name red in the user list/profile page?</p></h2>	 If you name is red in the user list or your profile page, you will also notice you don't have a rank.  In order to encourage players to actually play and not just sit on their initial 1400, you will not get a rank until you play 4 games.  Once you play 4 games, you will start being ranked.   
+	<h2><p style="padding:10px" class="bg-primary">What do I do if I find a bug?</p></h2>
+	Please let me know about it!  Send me an email about it at pinballchallenge@gmail.com.  
+	<h2><p style="padding:10px" class="bg-primary">How do I suggest a new feature?</p></h2>
+	Please let me know about it!  Send me an email about it at pinballchallenge@gmail.com.  
+	<h2><p style="padding:10px" class="bg-primary">Who you gonna call?</p></h2>
+	GHOSTBUSTERS!
+	</div>
+	</div>
+      </script>
+  </body>		
+</html>

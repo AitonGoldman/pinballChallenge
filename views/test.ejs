@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html ng-app="myapp">
+
+<head>
+    <title>AngularJS: UI-Router Quick Start</title>
+    <!-- Bootstrap CSS -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/stylesheets/animate.css" rel="stylesheet">
+</head>
+
+<body class="container">
+  <p><i>Best viewed in pop-out mode to see location changes. Click blue button on the right.</i></p>
+
+  <div class="navbar">
+    <div class="navbar-inner">
+      <a class="brand" href="#">Quick Start</a>
+      <ul class="nav">
+        <li><a uib-tooltip="hi there" href="#/a/foo">Route 1</a></li>
+        <li><a href="#/a/bar">Route 2</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="span12 ui-view-container">
+      <div class="well" ui-view></div>        
+    </div>
+  </div>         
+  
+  <!-- Angular -->
+    <script src="/bower_components/angular/angular.js"></script>
+<!--  <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.8/angular.min.js"></script> -->
+  <!-- Angular Animate -->
+<!--  <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.8/angular-animate.js"></script> -->
+  <!-- UI-Router -->
+    <script src="/bower_components/angular-animate/angular-animate.js"></script>
+ <script src="//angular-ui.github.io/ui-router/release/angular-ui-router.js"></script>
+ <script src="/bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+ 
+  <!-- App Script -->
+  <script>
+    var myapp = angular.module('myapp', ["ui.router", "ngAnimate","ui.bootstrap"])
+    myapp.config(function($stateProvider, $urlRouterProvider){    
+    $stateProvider.state('application', {
+    url: '/a',
+    template: '      <div ui-view />'
+    
+    })
+          .state("foo", {
+              url: "/foo",
+    template: '<h1>foo</h1>',
+    parent: 'application'
+          })
+          .state("bar", {
+              url: "/bar",
+    template: '<h1>bar</h1>',
+    parent: 'application'
+          })
+      
+      $urlRouterProvider.otherwise("/foo");
+    })
+  </script>
+
+</body>
+
+</html>
