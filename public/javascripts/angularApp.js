@@ -1,3 +1,4 @@
+//DON'T FORGET : install nodejs-legacy package
 //downloaded alert package from http://ngmodules.org/modules/message-center
 //had to install libkrb5-dev for mongoose
 //passport itself : http://passportjs.org/
@@ -27,14 +28,11 @@
 //Features
 //--------
 
+//add badges to profile page
+
 //add challenege management page
 //** do some sanity checking/restriction before adding challenge?
 
-//remove bobo badge icon/add mouse over for badges?
-//** add code to get all badges from service for main controller 
-//** add code to template to get badges for specified player and display them - done, but need to validate
-//** add code to server side to update badges on match submittal
-//** add mouseover text to db and code to the template to display the mouseover
 //-----------------
 
 //add "inform me of new features by email" checkbox to add user
@@ -61,7 +59,9 @@
 //Bugs
 //--------
 
-//fix rank ( to account for unranked players )
+//Badges don't reload on userlist page?  
+
+//Limit the number of badges display on user list page
 
 // on add match page, remove values after submitting?
 //* animate fade out of ng-model values
@@ -386,13 +386,13 @@ app.controller('AddMatchesController',
 		'validMatches',
 		'Notification','ANTE_RANGES',
 		'filterFilter','$q',
-		'validChallenges',
+		'validChallenges','$http',
 		function($scope, 
 			 validMachinesList, validUsers,
 			 validMatches, 
 			 Notification, ANTE_RANGES,
 			 filterFilter, $q,
-			 validChallenges){
+			 validChallenges, $http){
 		    $scope.validUsersList = validUsers.query();
 		    $scope.validMachinesList = validMachinesList;
 		    
@@ -474,6 +474,7 @@ app.controller('AddMatchesController',
 				    $scope.FilteredWinAndLoserNoMachine[0].completed = true;
 				    validChallenges.update($scope.FilteredWinAndLoserNoMachine[0]).$promise.then(function(data){
 					Notification('Challenge has been completed!')
+					//FIXME : need to handle badge checking more cleanly
 				    })				    
 				}
 			    }			    
@@ -495,7 +496,12 @@ app.controller('AddMatchesController',
 			},function(){
 			    $scope.submitted = true;
 			    Notification('Match has been recorded')
-			    
+			    $http.get('/badgeCheck/'+$scope.match_winner._id).then(function(data){
+				console.log('badge check for winner done')
+			    })
+			    $http.get('/badgeCheck/'+$scope.match_loser._id).then(function(data){
+				console.log('badge check for winner done')
+			    })			    
 			}, function(){
 			    Notification.error('Match could not be saved due to server error!')					      
 			}).$promise
@@ -664,20 +670,27 @@ app.controller('MainController',
 			}
 
 			var filtered = orderByFilter($scope.validUsersList,"-points")
-			$scope.rank = 1
+			$scope.rank = 1			
 			for(i in filtered){
 			    if (i == 1){
 				$scope.rank = 1
 			    }
-			    if (i >= 1 && filtered[i].points - filtered[i-1].points != 0){
-				$scope.rank = i
-			    }
+			    
 			    if (filtered[i].matches_played < 5){
-				$scope.rank = "NOT RANKED"
+				$scope.not_rank = true
+			    } else {
+				if (i >= 1 && filtered[i].points - filtered[i-1].points != 0){
+				    $scope.rank = $scope.rank + 1
+				}				
+				$scope.not_rank = false
 			    }
+			    
 			    if (filtered[i]._id == $scope.user_id){
+				console.log($scope.not_rank)
 			     	break
 			    }
+
+
 			}
 
 		    })
@@ -790,6 +803,13 @@ app.config([
 	}).state('help', {
 	    url: '/help',
 	    templateUrl: '/help.html',
+	    parent: 'application',
+	    resolve: { test: function(){
+		fuckit();
+	    }}
+	}).state('about', {
+	    url: '/about',
+	    templateUrl: '/about.html',
 	    parent: 'application',
 	    resolve: { test: function(){
 		fuckit();

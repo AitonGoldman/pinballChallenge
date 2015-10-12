@@ -17,7 +17,7 @@
     <script src="/bower_components/angular-sanitize/angular-sanitize.js"></script>
     <script src="/bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
     <script src="/bower_components/angular-cookies/angular-cookies.js"></script>
-    <script src="/bower_components/angular-autodisable/angular-autodisable.js"></script>
+    <script src="/bower_components_temp/angular-autodisable/angular-autodisable.js"></script>
     <script src="/javascripts/angularApp.js"></script>
 
     <style type="text/css">
@@ -106,10 +106,9 @@
 	      <span class="icon-bar"></span>
 	    </button>
 	    
-	    <a class="navbar-brand" href="#/"><img style='margin-top:-20' width=65 src='/images/pinball.png'></a>
-	      <ul collapse="isNotCollapsed" class="navbar-collapse nav navbar-nav" style="border-top:0;box-shadow:inset 0 0 0;padding-left:0">
-		<li><a href="#/" style="padding-left:0">Challenge App</a></li>
-	      </ul>
+	    <a href="#/application/about"><img style='margin-top:-12' width=65 src='/images/pinball.png'>
+	      <span><b><i>Pinball Challenge</i></b></span>
+	    </a>
 	  </div>
 
 	  <div collapse="isCollapsed" class="navbar-collapse bs-js-navbar-collapse">
@@ -218,7 +217,8 @@
 		    <div>Wins : {{user.wins}} <br>
 		      Losses : {{user.losses}} <br>
 		      Matches Played : {{user.matches_played}} <br>
-		      Rank : {{rank}} <br>
+		      <span style='color:red' ng-if="not_rank"> Rank : NOT RANKED (less than 5 matches played)<br></span>
+		      <span ng-if="not_rank == false"> Rank : {{rank}}<br></span>
 		      Points : {{user.points}}<br>
 		      <span ng-if="user.local.email">Email Address : {{user.local.email}}</span>
 		    </div>
@@ -382,10 +382,27 @@
 	  </div>
 	</div>
       </script>
+      <script type="text/ng-template" id="/about.html">
+	<div class="container-fluid text-center">
+	  <div class="row">
+	    <div class="col-md-4 col-md-offset-4">
+	      <img  width=65 src='/images/pinball.png'>
+	      <span><b><i>Pinball Challenge version 0.5</i></b></span>
+	    </div>
+	  </div>
+	  <div class="col-md-4 col-md-offset-4">
+
+	    <p>Source code available at <a href="https://github.com/AitonGoldman/pinballChallenge">https://github.com/AitonGoldman/pinballChallenge</a></p>
+	    <p>Please report bugs, feature requests, or general comments to pinballchallenge@gmail.com.</p>
+	  </div>	  
+	</div>
+      </script>
       <script type="text/ng-template" id="/help.html">
 	<div class="container-fluid">
 	<div ng-controller="HelpController">
-	  <h2><p style="padding:10px" class="bg-primary">How does scoring work?</p></h2>
+	<h2><p style="padding:10px" class="bg-primary">Do I need to issue a challenge before entering a match retult?</p></h2>
+	  Nope.  You can enter a match result without having an active challenge.  If you do have an active challenge with the person you play with, Pinball Challenge will remove it from your list of challenges on your profile page.  
+	<h2><p style="padding:10px" class="bg-primary">How does scoring work?</p></h2>
 	There is some math ahead.  Don't worry though - the Challenge App takes care of it for you.
 	<br><br>When you first create your account, you start with 1400 points.  Each time you play another player, both you and the other player need to commit a certain number of points.  The number of points each player commits depends on the difference between your current points and your opponent's points - the player with more points will have to commit more points than the player with fewer points.  The combination of both players commited points will always be 32.  The loser of the match looses the amount they committed and the winner wins back the points they committed and the points committed by the loser.
 	<br><br>Below is an example to illustrate how this works.
@@ -407,6 +424,8 @@
 	<h2><p style="padding:10px" class="bg-primary">What do I do if I find a bug?</p></h2>
 	Please let me know about it!  Send me an email about it at pinballchallenge@gmail.com.  
 	<h2><p style="padding:10px" class="bg-primary">How do I suggest a new feature?</p></h2>
+	Please let me know about it!  Send me an email about it at pinballchallenge@gmail.com.
+	<h2><p style="padding:10px" class="bg-primary">How do I suggest a new badge?</p></h2>
 	Please let me know about it!  Send me an email about it at pinballchallenge@gmail.com.  
 	<h2><p style="padding:10px" class="bg-primary">Who you gonna call?</p></h2>
 	GHOSTBUSTERS!

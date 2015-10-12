@@ -349,6 +349,7 @@ module.exports = function(app,passport,secrets){
     });
 
     //FIXME : don't forget to put auth back in
+    //FIXME : need to clean this up
     router.get('/badgeCheck/:userId', function(req, res, next) {
 	var userId = req.params.userId;
     	var challengebadgedefpromise = ChallengeBadgeDef.find();
@@ -366,9 +367,15 @@ module.exports = function(app,passport,secrets){
 				badge_img_url:badgedefs[badgedef].badge_img_url,
 				mouseover_string:badgedefs[badgedef].mouseover_string
 			    });
-			    newchallengebadge.save(function(err,thing){
-				console.log('badge saved')
-			    });
+			    ChallengeBadge.find({$and : [{'user_id':userId},
+							 {'badge_id':badgedefs[badgedef]._id}]
+						},function(err,badges){
+						    if(badges.length == 0){
+							newchallengebadge.save(function(err,thing){
+							    console.log('badge saved')
+							});
+						    }
+						})
 			} else {
 			    console.log('badge has NOT been added')
 			}
