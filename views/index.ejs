@@ -114,11 +114,11 @@
 	  <div collapse="isCollapsed" class="navbar-collapse bs-js-navbar-collapse">
 	    <ul class="nav navbar-nav">
 	      <li ng-if="isUserAuthenticated"><a href="#/application/user_list">User List</a></li>
-	      <li ng-if="isUserAuthenticated"><a href="#/application/list_machines">List Machines</a></li>
-	      <li ng-if="isUserAuthenticated"><a href="#/application/add_matches">Add Match</a></li>
+	      <li ng-if="isUserAuthenticated"><a href="#/application/list_machines">Machine List</a></li>
+	      <li ng-if="isUserAuthenticated"><a href="#/application/add_matches">Add Match Results</a></li>
 	      <li ng-if="!isUserAuthenticated"><a href="#/application/login">Login</a></li>
 	      
-	      <li ng-if="isUserAuthenticated"><a href="#/application/">Profile</a></li>
+	      <li ng-if="isUserAuthenticated"><a href="#/application/">Your Profile</a></li>
 	      <li ng-if="isUserAuthenticated"><a href="#/application/challenges">Challenges</a></li>
 	      <li><a href="#/application/help">Help!</a></li>
 	    </ul>
@@ -386,15 +386,23 @@
 	<div class="container-fluid text-center">
 	  <div class="row">
 	    <div class="col-md-4 col-md-offset-4">
-	      <img  width=65 src='/images/pinball.png'>
 	      <span><b><i>Pinball Challenge version 0.5</i></b></span>
 	    </div>
 	  </div>
 	  <div class="col-md-4 col-md-offset-4">
-
+	    <br>
 	    <p>Source code available at <a href="https://github.com/AitonGoldman/pinballChallenge">https://github.com/AitonGoldman/pinballChallenge</a></p>
 	    <p>Please report bugs, feature requests, or general comments to pinballchallenge@gmail.com.</p>
-	  </div>	  
+	    <br>
+	    <div class="panel  panel-primary">
+	      <div class="panel-heading">
+		<span>ChangeLog</span>
+	      </div>
+	      <div class="panel-body">	  
+		<p><u>0.50 "Darmok and Jalad at Tanagra"</u> <br> Initial Commit</p>
+	      </div>
+	    </div>
+	  </div>
 	</div>
       </script>
       <script type="text/ng-template" id="/help.html">
