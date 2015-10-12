@@ -764,7 +764,7 @@ app.run(function ($rootScope, AUTH_EVENTS, AuthService, $state, $cookies, Notifi
     });
 
     $rootScope.$on('$stateChangeStart', function (event, next) {
-	if (!AuthService.isAuthenticated() && (next.name != 'login' && next.name!= 'add_users')) {
+	if (!AuthService.isAuthenticated() && (next.name != 'help' && next.name != 'login' && next.name!= 'add_users')) {
 	    event.preventDefault();
 	    $rootScope.$broadcast(AUTH_EVENTS.notAuthenticated);
 	    $rootScope.nextState = next
