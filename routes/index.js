@@ -303,7 +303,6 @@ module.exports = function(app,passport,secrets){
 	    service: 'Gmail',
 	    auth: {
 		user: 'pinballchallenge@gmail.com',
-		//FIXME : DO NOT COMMIT THIS - PASS THIS IN
 		pass: secrets.google_account_password
 	    }
 	});
@@ -348,15 +347,13 @@ module.exports = function(app,passport,secrets){
 	});
     });
 
-    //FIXME : don't forget to put auth back in
     //FIXME : need to clean this up
-    router.get('/badgeCheck/:userId', function(req, res, next) {
+    router.get('/badgeCheck/:userId', auth, function(req, res, next) {
 	var userId = req.params.userId;
     	var challengebadgedefpromise = ChallengeBadgeDef.find();
 	challengebadgedefpromise.then(function(badgedefs){
 	    var challengebadgepromise = ChallengeBadge.find();
 	    challengebadgepromise.then(function(playerbadges){
-		//FIXME : for each badge def, check if the two players have that badge
 		ChallengeUser.find({'_id':userId},function(err, users){
 		    for(badgedef in badgedefs){
 			evalFunc = new Function("user","matches",badgedefs[badgedef].badge_def_eval_string)
@@ -416,18 +413,7 @@ module.exports = function(app,passport,secrets){
 	    })
 	})
     });	
-    
-    // router.post('/login', function(req, res, next) {
-    // 	 res.cookie('sessionId','sessionIdGoesHere');
-    // 	 res.json({
-    // 	 	id: req.body.username+'-session_id',
-    // 	 	user: {
-    // 	 	    id: req.body.username+'-auth_id',
-    // 	 	    role:'admin'
-    // 	 	}
-    // 	 });	
-    // });
-    
+        
     return router;
 }
 

@@ -1,95 +1,3 @@
-//DON'T FORGET : install nodejs-legacy package
-//downloaded alert package from http://ngmodules.org/modules/message-center
-//had to install libkrb5-dev for mongoose
-//passport itself : http://passportjs.org/
-//replacement for message-center : https://github.com/alexcrack/angular-ui-notification
-
-//overall tutorial on building app with mean stack https://thinkster.io/mean-stack-tutorial
-//authservice and 401 injector : from https://medium.com/opinionated-angularjs/techniques-for-authentication-in-angularjs-applications-7bbf0346acec
-//passport authentication ( used as guide, but made modifications ) : https://scotch.io/tutorials/easy-node-authentication-setup-and-local
-//passport authentication ( I got the "how to auth individual methods after login" approach from the this )
-//startfrom filter (and paginating while search) from : https://gist.github.com/kmaida/06d01f6b878777e2ea34
-//stack overflow on "load only once" : http://stackoverflow.com/questions/30855940/use-angular-factory-to-hold-a-value-for-rest-of-application-to-access-to-minimiz
-//disable controls when making http request : https://github.com/kirstein/angular-autodisable
-// ng-if creates its own scope, so anything underneath it needs to refer to $parent.<whatever>
-// passing in nested structures to forms - no link, but needs a setting in the express app.js and special formatting in the form
-
-//nodemailer : used for emailing http://www.nodemailer.com/
-
-//Path to 0.5
-// 
-// add help page - 2 hours
-// add badges - 2 hours
-// docs for github - 1 hour
-// push to github - 30 minutes
-// set up vm in google cloud - 2 hours
-
-
-//Features
-//--------
-
-//add badges to profile page
-
-//add challenege management page
-//** do some sanity checking/restriction before adding challenge?
-
-//-----------------
-
-//add "inform me of new features by email" checkbox to add user
-
-//add "confirm match score" feature
-
-//Add badges
-
-//add machine scores option to existing matches
-
-//add "region" to match fields?  or to user?
-
-//Automate intteregation to ipdb
-//*fix ipdb fetcher to get right machine ids for machines
-
-//allow for specifying date of match?
-
-//list of all matches per machine
-
-//add ng-disable to all submit buttons
-//* make sure animation runs at least once? or add some debounce to the loading animation?
-//* purposely add delay on server side?
-
-//Bugs
-//--------
-
-//Badges don't reload on userlist page?  
-
-//Limit the number of badges display on user list page
-
-// on add match page, remove values after submitting?
-//* animate fade out of ng-model values
-//* on animate finish event, wipe the control and set text color back to black
-
-//Fix collapsable navbar ( look at angular-bootstrap demo )
-
-//Fix bug with login where navbar does not collapse
-
-//login after create user
-//* if you select userlist, it lets you - needs to hit rest api to generate a 401
-//* should we set 401 cookie?  unset after we login?
-
-//Refactor
-//--------
-// Add error callback to all .saves/.gets?  Or just add 500 handler?
-
-// Does watch pay attention to $scope?  Will a watch in one scope be removed/replaced by a watch on a different scope?
-
-// need to handle broadcasts better?  re-look at when we should be using broadcasts
-
-// Need stress tests
-
-//Refactor mongodb so everything happens in the match table
-
-//on getting to login page, remove cookies?
-//* only should do this in specific situations ( add user, 401, anything else? ) 
-
 var app = angular.module('pplChallenge', ['ngAnimate', 'ngAutodisable', 'MessageCenterModule','ui.router','ngResource','ui.select', 'ngSanitize', 'ui.bootstrap','ngCookies','ui-notification']);
 
 
@@ -398,7 +306,6 @@ app.controller('AddMatchesController',
 		    
 		    $scope.addMatch = function(){
 
-			//FIXME : running into the no-results-set bug here
 			if($scope.noResultsMachine){
 			    Notification.error('The machine you entered was not valid')
 			    return $q.defer().reject();
@@ -587,8 +494,6 @@ app.controller('ChallengeController',
 			    return $q.defer().reject();
 			}
 			
-			//FIXME : this is a bug in typeahead-no-results ( doesn't reset after something is selected )
-			//FIXME : shouldn't need this anymore since username is now required
 			if($scope.challenger_user._id === undefined){
 			    Notification.error('You have not selected a user or selected an invalid user')
 			    return $q.defer().reject();
