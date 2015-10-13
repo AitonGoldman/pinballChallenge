@@ -563,7 +563,12 @@ app.controller('MainController',
 		    $scope.user = {};
 		    $scope.user_id = $stateParams.id;		    
 		    $scope.validMachinesList = validMachinesList;
-
+		    
+		    $scope.in_profile_page = false
+		    if($stateParams.id === undefined){
+			$scope.in_profile_page = true
+		    }
+		    
 		    $scope.validUsersList = validUsers.query();
 		    $scope.validUsersList.$promise.then(function(data){
 
