@@ -211,10 +211,14 @@
 	      <div ng-controller="MainController">
 		<div class="panel  panel-primary">
 		  <div class="panel-heading">
-		    <span>{{user.local.username}}</span>
+		    <span ng-if="!user.displayName">{{user.local.username}}</span>
+		    <span ng-if="user.displayName">{{user.displayName}}</span>
 		  </div>
 		  <div class="panel-body">
-		    <div>Wins : {{user.wins}} <br>
+		    <div>
+		      <span ng-if="user.displayName">Display Name : {{user.displayName}}</span><br>
+		      Username : {{user.local.username}}<br>
+		      Wins : {{user.wins}} <br>
 		      Losses : {{user.losses}} <br>
 		      Matches Played : {{user.matches_played}} <br>
 		      <span style='color:red' ng-if="not_rank"> Rank : NOT RANKED (less than 5 matches played)<br></span>
@@ -241,6 +245,26 @@
 		    </form>	      
 		  </div>
 		</div>
+
+		<div class="panel  panel-primary" ng-if="in_profile_page && user.displayName === undefined">
+		  <div class="panel-heading">
+		    <span>Set Display Name</span>
+		  </div>
+		  <div class="panel-body">
+		    If you want a name other than your user name to be displayed on the user list page, enter it here.
+		    Otherwise, your user name will be used.  		    
+		    <form name="addDisplayNameToUser" ng-controller="AddDisplayNameController" 
+			  ng-submit="addDisplayName()" ng-autodisable ng-autodisable-class="spinner-square" ng-use-jqlite>
+		      <div class="input-group">
+			<input type="text" id="displayName"
+			       ng-model="$parent.newDisplayName" class="form-control" required email>
+			<span  class="input-group-addon">Display Name</span>
+		      </div>
+		      <br><button class="btn btn-default" type="submit">Submit</button>
+		    </form>	      
+		  </div>
+		</div>
+
 		
 		<div  ng-controller="UserProfileMatchController">
 		  <div class="panel  panel-primary">
@@ -274,15 +298,23 @@
 	      <form name="loginFormAddUser" ng-controller="AddUserFormController"
 		    ng-submit="addUser(credentials)" ng-autodisable ng-autodisable-class="spinner-square" ng-use-jqlite>
 		<div class="input-group">
+		  <input type="text" id="displayName"
+			 ng-model="credentials.displayname" class="form-control" required
+			 placeholder="This name is what other users will see">
+		  <span  class="input-group-addon" id="basic-addon1">Display Name</span>
+		</div>
+		<br>
+		<div class="input-group">
 		  <input type="text" id="username"
-			 ng-model="credentials.username" class="form-control" required>
-		  <span  class="input-group-addon" id="basic-addon4">Player Name</span>
+			 ng-model="credentials.username" class="form-control" required
+			 placeholder="You will use this to login">
+		  <span  class="input-group-addon" id="basic-addon2">User Name</span>
 		</div>
 		<br>
 		<div class="input-group">
 		  <input type="password" id="password"
 			 ng-model="credentials.password" class="form-control" required>
-		  <span  class="input-group-addon" id="basic-addon4">Password</span>
+		  <span  class="input-group-addon" id="basic-addon3">Password</span>
 		</div>
 		<br>
 		<div class="input-group">

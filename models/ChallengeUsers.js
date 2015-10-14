@@ -40,7 +40,8 @@ var ChallengeUserSchema = new mongoose.Schema({
     matches_played:  Number,
     points: Number,
     appRole: String,
-    challenges: [Challenge]
+    challenges: [Challenge],
+    displayName: String
 });
 
 // generating a hash

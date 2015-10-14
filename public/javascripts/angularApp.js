@@ -233,6 +233,23 @@ app.controller('AddUserEmailController',
 		    }
 		}])
 
+app.controller('AddDisplayNameController',
+	       ['$scope','validUsers',
+		'Notification',
+		'$q',
+		function($scope, validUsers,
+			 Notification, $q){
+		    
+		    $scope.addDisplayName = function(){
+			$scope.user.displayName = $scope.newDisplayName			
+			var displayNamePromise = validUsers.save($scope.user).$promise
+			displayNamePromise.then(function(data){
+			    Notification('successfully set display name')
+			})
+		    }
+		}])
+
+
 app.controller('AddUserFormController',
 	       ['$scope','validUsers',
 		'messageCenterService','Notification',
@@ -242,7 +259,7 @@ app.controller('AddUserFormController',
 			 $state, $q){
 		    
 		    $scope.addUser = function(new_user_credentials){
-			
+			//FIXME : should just be able to pass in new_user_credentials?
 			var validUsersPromise = validUsers.save({
 			    local: {
 				username: new_user_credentials.username,
@@ -251,7 +268,8 @@ app.controller('AddUserFormController',
 			    wins:0,
 			    losses:0,
 			    matches_played: 0,
-			    points: 1400
+			    points: 1400,
+			    displayName: new_user_credentials.displayname
 			}).$promise
 			validUsersPromise.then(function(data){
 			    if(data.status){
