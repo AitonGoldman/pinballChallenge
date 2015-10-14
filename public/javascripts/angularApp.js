@@ -121,7 +121,8 @@ app.factory('AuthService', function ($http, $cookies, Notification, $resource) {
 		$cookies.remove('user_info');
 		$cookies.putObject('user_info',{_id:res.data._id,username:res.data.local.username})
 		$http.get('/static_json/motd.json').then(function(data){
-		    Notification(data.data.message)
+		    //		    Notification({message:data.data.message,delay:10000})
+		    Notification({message: "Welcome to the terror dome! ",delay:10000})
 		})
 		return res.data;
 	    });
@@ -736,7 +737,8 @@ app.config(function(NotificationProvider) {
 	verticalSpacing: 20,
 	horizontalSpacing: 20,
 	positionX: 'left',
-	positionY: 'bottom'
+	positionY: 'bottom',
+	templateUrl: '/templates/notification_template.html'
     });
 });
 
