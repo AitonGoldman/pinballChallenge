@@ -73,6 +73,18 @@ app.factory('validUsers', function($resource){
 	})
 });
 
+app.factory('validEmails', function($resource){
+    return $resource('challengeUserEmail/:userId',{
+	userId:'@_id'},{
+	    get: {
+		method:'GET',timeout:6000
+	    }, save: {
+		method:'POST',timeout:6000
+	    }
+	})
+});
+
+
 app.factory('validChallenges', function($resource){
     
     return $resource('challengeChallenge/:userId',{
