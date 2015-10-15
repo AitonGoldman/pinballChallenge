@@ -66,6 +66,8 @@ module.exports = function(app,passport,secrets){
 		//return res.redirect('/');
 		user.local.password='';
 		user.local.appRole='admin';
+//		ChallengeUserStats.find({'_id':userId},function(err, users){		    
+//		})
 		return res.json(user);
 	    });	
 	})(req, res, next);
@@ -150,7 +152,7 @@ module.exports = function(app,passport,secrets){
 		challengeuser.local.password = challengeuser.generateHash(challengeuser.local.password);
 		challengeuser.save(function(err, user){
 		    if(err){ return next(err); }
-		    //come back
+		    challengeuserstats.userId = user._id
 		    challengeuserstats.save(function(err,user){
 			res.json({status:true});
 		    })
