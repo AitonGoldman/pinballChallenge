@@ -578,12 +578,14 @@ app.controller('MainController',
 		'$state', 'Notification',
 		'$stateParams',	'filterFilter',
 		'orderByFilter', '$q',
+		'validEmails',
 		function($scope, AuthService,
 			 $cookies, validUsers,
 			 validMachinesList,
 			 $state, Notification,
 			 $stateParams, filterFilter,
-			 orderByFilter, $q){
+			 orderByFilter, $q,
+			 validEmails){
 		    var user_info = $cookies.getObject('user_info');
 		    if(user_info === undefined){
 			$state.go('login');
@@ -606,9 +608,12 @@ app.controller('MainController',
 		    $scope.validUsersList = validUsers.query();
 		    $scope.validUsersList.$promise.then(function(data){
 
+			
+			
 			if($scope.user_id === undefined){
 			    $scope.user = filterFilter($scope.validUsersList, user_info._id)[0];
 			    $scope.user_id = user_info._id;
+			    $scope.email_address = validEmails.get({userId:$scope.user.userId})
 			} else {
 			    $scope.user = filterFilter($scope.validUsersList, $scope.user_id)[0];
 			}
