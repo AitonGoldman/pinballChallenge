@@ -33,15 +33,7 @@ var ChallengeUserSchema = new mongoose.Schema({
 	token        : String,
 	email        : String,
 	name         : String
-    },
-    region: String,
-    wins: Number,
-    losses: Number,
-    matches_played:  Number,
-    points: Number,
-    appRole: String,
-    challenges: [Challenge],
-    displayName: String
+    }
 });
 
 // generating a hash
@@ -128,3 +120,18 @@ var ChallengeMatchSchemaEx = new mongoose.Schema({
 mongoose.model('ChallengeMatch', ChallengeMatchSchema);
 
 mongoose.model('ChallengeMatchEx', ChallengeMatchSchemaEx);
+
+var ChallengeUserStatsSchema = new mongoose.Schema({
+    region: String,
+    wins: Number,
+    losses: Number,
+    matches_played:  Number,
+    points: Number,
+    appRole: String,
+    challenges: [Challenge],
+    displayName: String,
+    userId: String,
+    username: String
+})
+
+mongoose.model('ChallengeUserStats', ChallengeUserStatsSchema);
