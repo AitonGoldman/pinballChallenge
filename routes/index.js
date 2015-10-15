@@ -118,7 +118,7 @@ module.exports = function(app,passport,secrets){
 		} else {
 		    users[i]['displayNameHybrid'] = users[i].displayName
 		}		
-		delete users[i].local.password
+		//users[i].local.password = ''
 	    }
     	    res.json(users);
     	});
