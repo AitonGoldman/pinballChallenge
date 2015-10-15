@@ -40,6 +40,7 @@ module.exports = function(app,passport,secrets){
 	passport.authenticate('local-login', function(err, user, info) {
 	    if (err) {
 		// if error happens
+		console.log('generic error in login')
 		return next(err);
 	    }
 	    
@@ -47,6 +48,7 @@ module.exports = function(app,passport,secrets){
 		// if authentication fail, get the error message that we set
 		// from previous (info.message) step, assign it into to
 		// req.session and redirect to the login page again to display
+		console.log('auth failure in login')
 		req.session.messages = info.message;
 		return res.status(401).json({});
 	    }
@@ -56,6 +58,7 @@ module.exports = function(app,passport,secrets){
 		if (err) {
 		    req.session.messages = "Error";
 		    return next(err);
+		    console.log('passport auth failure in login')
 		}
 		
 		// set the message
@@ -105,9 +108,18 @@ module.exports = function(app,passport,secrets){
 
     
     var ChallengeUser = mongoose.model('ChallengeUser');    
-    router.get('/challengeUser', auth, function(req, res, next) {
-    	ChallengeUser.find(function(err, users){
+    router.get('/challengeUser', function(req, res, next) {
+	//    	ChallengeUser.find(function(err, users){
+	ChallengeUser.find().lean().exec(function(err, users){
     	    if(err){ return next(err); }
+	    for(i in users){
+		if(users[i].displayName === undefined){
+		    users[i]['displayNameHybrid'] = users[i].local.username
+		} else {
+		    users[i]['displayNameHybrid'] = users[i].displayName
+		}		
+		delete users[i].local.password
+	    }
     	    res.json(users);
     	});
     });
@@ -389,10 +401,11 @@ module.exports = function(app,passport,secrets){
 	var challengematch = new ChallengeMatch(req.body.match);
 	var winner_id = req.body.winner._id
 	var loser_id = req.body.loser._id
-	delete req.body.winner._id
-	delete req.body.loser._id 
-	var challenge_winner_json = req.body.winner;
-	var challenge_loser_json = req.body.loser;
+	//delete req.body.winner._id
+	//delete req.body.loser._id
+	console.log('one')
+	var challenge_winner_json = new ChallengeUser(req.body.winner);
+	var challenge_loser_json = new ChallengeUser(req.body.loser);
 
 	challengematch.save(function(err, user){
 	    if(err){
@@ -400,7 +413,7 @@ module.exports = function(app,passport,secrets){
 		return next(err); }
 	    ChallengeUser.update({_id:winner_id}, challenge_winner_json, function(err, user){
 		if(err){
-		    //console.log(err);
+		    console.log(err);
 		    return next(err);
 		}
 		ChallengeUser.update({_id:loser_id}, challenge_loser_json, function(err, user){

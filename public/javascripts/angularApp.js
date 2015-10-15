@@ -525,9 +525,11 @@ app.controller('ChallengeController',
 			}
 			
 			var challengePromise = validChallenges.save({
-			    challenger_name:user_info.username,
+			    //			    challenger_name:user_info.username,
+			    challenger_name:user_info.displayNameHybrid,
 			    challenger_id:user_info._id,
-			    challenged_name:$scope.challenger_user.local.username,
+			    //			    challenged_name:$scope.challenger_user.local.username,
+			    challenged_name:$scope.challenger_user.displayNameHybrid,
 			    challenged_id:$scope.challenger_user._id,
 			    machine_id: $scope.challenger_machine._id,
 			    machine_name: $scope.challenger_machine.machine_name,
@@ -779,6 +781,7 @@ app.run(function ($rootScope, AUTH_EVENTS, AuthService, $state, $cookies, Notifi
     $rootScope.$on(AUTH_EVENTS.notAuthenticated, function(event, next){
 	event.preventDefault();
 	$cookies.remove('connect.sid');
+	$cookies.remove('user_info');
 	$state.go('login')
     });
 
@@ -789,7 +792,7 @@ app.run(function ($rootScope, AUTH_EVENTS, AuthService, $state, $cookies, Notifi
     });
 
     $rootScope.$on('$stateChangeStart', function (event, next) {
-	if (!AuthService.isAuthenticated() && (next.name != 'help' && next.name != 'login' && next.name!= 'add_users')) {
+	if (!AuthService.isAuthenticated() && (next.name == 'add_matches' || next.name == 'challenges' || next.name == 'main' )) {
 	    event.preventDefault();
 	    $rootScope.$broadcast(AUTH_EVENTS.notAuthenticated);
 	    $rootScope.nextState = next
