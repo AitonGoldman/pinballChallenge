@@ -154,6 +154,7 @@ module.exports = function(app,passport,secrets){
 		challengeuser.save(function(err, user){
 		    if(err){ return next(err); }
 		    challengeuserstats.userId = user._id
+		    challengeuserstats.username = user.local.username
 		    challengeuserstats.save(function(err,user){
 			res.json({status:true});
 		    })
