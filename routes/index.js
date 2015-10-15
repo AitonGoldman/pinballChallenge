@@ -107,7 +107,9 @@ module.exports = function(app,passport,secrets){
     });
 
     
-    var ChallengeUser = mongoose.model('ChallengeUser');    
+    var ChallengeUser = mongoose.model('ChallengeUser');
+    var ChallengeUserStats = mongoose.model('ChallengeUserStats');
+    
     router.get('/challengeUser', function(req, res, next) {
 	//    	ChallengeUser.find(function(err, users){
 	ChallengeUser.find().lean().exec(function(err, users){
@@ -143,11 +145,15 @@ module.exports = function(app,passport,secrets){
 		res.json({status:false})
 	    } else {
 		var challengeuser = new ChallengeUser(req.body);
-		challengeuser.appRole = 'admin';
+		var challengeuserstats = new ChallengeUserStats(req.body);
+		//challengeuser.appRole = 'admin';
 		challengeuser.local.password = challengeuser.generateHash(challengeuser.local.password);
 		challengeuser.save(function(err, user){
-		    if(err){ return next(err); }		    
-		    res.json({status:true});
+		    if(err){ return next(err); }
+		    //come back
+		    challengeuserstats.save(function(err,user){
+			res.json({status:true});
+		    })
 		});
 	    }
 	})
