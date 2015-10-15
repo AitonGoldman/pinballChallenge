@@ -66,9 +66,10 @@ module.exports = function(app,passport,secrets){
 		//return res.redirect('/');
 		user.local.password='';
 		user.local.appRole='admin';
-//		ChallengeUserStats.find({'_id':userId},function(err, users){		    
-//		})
-		return res.json(user);
+		ChallengeUserStats.find({'userId':user._id},function(err, userstats){		    
+		    return res.json(userstats[0]);		    
+		})
+
 	    });	
 	})(req, res, next);
     });       
