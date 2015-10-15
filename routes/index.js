@@ -114,16 +114,14 @@ module.exports = function(app,passport,secrets){
     var ChallengeUserStats = mongoose.model('ChallengeUserStats');
     
     router.get('/challengeUser', function(req, res, next) {
-	//    	ChallengeUser.find(function(err, users){
-	ChallengeUser.find().lean().exec(function(err, users){
+	ChallengeUserStats.find().lean().exec(function(err, users){
     	    if(err){ return next(err); }
 	    for(i in users){
 		if(users[i].displayName === undefined){
-		    users[i]['displayNameHybrid'] = users[i].local.username
+		    users[i]['displayNameHybrid'] = users[i].username
 		} else {
 		    users[i]['displayNameHybrid'] = users[i].displayName
 		}		
-		//users[i].local.password = ''
 	    }
     	    res.json(users);
     	});
