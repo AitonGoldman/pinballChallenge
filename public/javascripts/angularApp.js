@@ -232,14 +232,16 @@ app.controller('LoginController', function ($scope,$rootScope,
 
 app.controller('AddUserEmailController',
 	       ['$scope','validUsers',
-		'Notification',
-		'$q',
+		'Notification', '$q',
+		'validEmails',
 		function($scope, validUsers,
-			 Notification, $q){
+			 Notification, $q,
+			 validEmails){
 		    
 		    $scope.addEmail = function(){
-			$scope.user.local.email = $scope.newEmail			
-			var emailPromise = validUsers.save($scope.user).$promise
+			$scope.email_address.email = $scope.newEmail			
+			var emailPromise = validEmails.save({_id:$scope.user.userId,userId:$scope.user.userId,email:$scope.newEmail}).$promise
+
 			emailPromise.then(function(data){
 			    Notification('successfully set email address')
 			})

@@ -145,8 +145,25 @@ module.exports = function(app,passport,secrets){
 	ChallengeUser.find({'_id':userId},function(err, users){
 	    if(err){ return next(err); }
 	    //FIXME : handle bad userid query?
+	    console.log(users[0])
 	    res.json({email:users[0].local.email});
+	    //	    res.json(users[0]);
 	});
+    });
+
+    router.post('/challengeUserEmail/:userId', auth, function(req, res, next) {
+	
+	var userId = req.params.userId;
+	var challengeUser = req.body
+	console.log(challengeUser)
+	//	delete challengeUserStats._id;
+	ChallengeUser.find({'_id':userId},function(err, user_found){
+	    user_found[0].local.email = req.body.email
+	    ChallengeUser.update({_id:userId},user_found[0],function(err, user){
+    		if(err){ return next(err); }
+		res.json({status:true});
+	    });
+	})
     });
 
     
