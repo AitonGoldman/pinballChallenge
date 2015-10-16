@@ -413,7 +413,7 @@ module.exports = function(app,passport,secrets){
 	challengebadgedefpromise.then(function(badgedefs){
 	    var challengebadgepromise = ChallengeBadge.find();
 	    challengebadgepromise.then(function(playerbadges){
-		ChallengeUser.find({'_id':userId},function(err, users){
+		ChallengeUserStats.find({'_id':userId},function(err, users){
 		    for(badgedef in badgedefs){
 			evalFunc = new Function("user","matches",badgedefs[badgedef].badge_def_eval_string)
 			if(evalFunc(users[0],{})){
@@ -451,19 +451,19 @@ module.exports = function(app,passport,secrets){
 	//delete req.body.winner._id
 	//delete req.body.loser._id
 	console.log('one')
-	var challenge_winner_json = new ChallengeUser(req.body.winner);
-	var challenge_loser_json = new ChallengeUser(req.body.loser);
+	var challenge_winner_json = new ChallengeUserStats(req.body.winner);
+	var challenge_loser_json = new ChallengeUserStats(req.body.loser);
 
 	challengematch.save(function(err, user){
 	    if(err){
 		//console.log(err);
 		return next(err); }
-	    ChallengeUser.update({_id:winner_id}, challenge_winner_json, function(err, user){
+	    ChallengeUserStats.update({_id:winner_id}, challenge_winner_json, function(err, user){
 		if(err){
 		    console.log(err);
 		    return next(err);
 		}
-		ChallengeUser.update({_id:loser_id}, challenge_loser_json, function(err, user){
+		ChallengeUserStats.update({_id:loser_id}, challenge_loser_json, function(err, user){
 		    if(err){
 			//console.log(err);
 			return next(err);

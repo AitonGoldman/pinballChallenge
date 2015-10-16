@@ -426,12 +426,12 @@ app.controller('AddMatchesController',
 			    winner: $scope.match_winner,
 			    loser: $scope.match_loser,
 			    match:{
-				player_one_user_name:$scope.match_winner.local.username,
+				player_one_user_name:$scope.match_winner.displayNameHybrid,
 	      			player_one_id:$scope.match_winner._id,
-	      			player_two_user_name:$scope.match_loser.local.username,
+	      			player_two_user_name:$scope.match_loser.displayNameHybrid,
 	      			player_two_id:$scope.match_loser._id,
 	      			machine_name:$scope.selectedMachine.machine_name,
-	      			player_winner:$scope.match_winner.username,
+	      			player_winner:$scope.match_winner.displayNameHybrid,
 				dateOfMatch: new Date().getTime()						  
 			    }
 			},function(){
