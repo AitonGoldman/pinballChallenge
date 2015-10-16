@@ -131,7 +131,7 @@ module.exports = function(app,passport,secrets){
 	//console.log('looking for user')
 	var userId = req.params.userId;
 	
-	ChallengeUser.find({'_id':userId},function(err, users){
+	ChallengeUserStats.find({'_id':userId},function(err, users){
 	    if(err){ return next(err); }
 	    //FIXME : handle bad userid query?
 	    res.json(users[0]);
@@ -176,9 +176,9 @@ module.exports = function(app,passport,secrets){
     router.post('/challengeUser/:userId', auth, function(req, res, next) {
 	
 	var userId = req.params.userId;
-	var challengeUser = req.body
-	delete challengeUser._id;
-	ChallengeUser.update({_id:userId},challengeUser,function(err, user){
+	var challengeUserStat = req.body
+//	delete challengeUserStats._id;
+	ChallengeUserStats.update({_id:userId},challengeUserStat,function(err, user){
     	    if(err){ return next(err); }
 	    res.json(user);
 	});
