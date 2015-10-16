@@ -112,6 +112,33 @@ module.exports = function(app,passport,secrets){
     
     var ChallengeUser = mongoose.model('ChallengeUser');
     var ChallengeUserStats = mongoose.model('ChallengeUserStats');
+    var fs = require('fs');
+    router.get('/challengeUserConvert', function(req, res, next) {	
+	fs.readFileSync('/tmp/okayToGo')
+	ChallengeUser.find().lean().exec(function(err, users){
+    	    if(err){ return next(err); }
+	    for(i in users){
+		if(users[i].displayName === undefined){
+		    users[i]['displayNameHybrid'] = users[i].local.username
+		} else {
+		    users[i]['displayNameHybrid'] = users[i].displayName
+		}
+		var challengeuserstats = new ChallengeUserStats();
+		challengeuserstats.wins = users[i].wins
+		challengeuserstats.losses = users[i].losses
+		challengeuserstats.matches_played = users[i].matches_played
+		challengeuserstats.points = users[i].points
+		challengeuserstats.appRole = users[i].appRole
+		challengeuserstats.userId = users[i]._id
+		challengeuserstats.username = users[i].local.username
+		challengeuserstats.save(function(err, user){
+		    console.log('okie dokie')
+		})
+	    }
+    	    res.json(challengeuserstats);
+    	});
+    });
+    
     
     router.get('/challengeUser', function(req, res, next) {
 	ChallengeUserStats.find().lean().exec(function(err, users){
@@ -145,7 +172,6 @@ module.exports = function(app,passport,secrets){
 	ChallengeUser.find({'_id':userId},function(err, users){
 	    if(err){ return next(err); }
 	    //FIXME : handle bad userid query?
-	    console.log(users[0])
 	    res.json({email:users[0].local.email});
 	    //	    res.json(users[0]);
 	});
@@ -155,7 +181,6 @@ module.exports = function(app,passport,secrets){
 	
 	var userId = req.params.userId;
 	var challengeUser = req.body
-	console.log(challengeUser)
 	//	delete challengeUserStats._id;
 	ChallengeUser.find({'_id':userId},function(err, user_found){
 	    user_found[0].local.email = req.body.email
@@ -182,9 +207,10 @@ module.exports = function(app,passport,secrets){
 		    if(err){ return next(err); }
 		    challengeuserstats.userId = user._id
 		    challengeuserstats.username = user.local.username
-		    challengeuserstats.save(function(err,user){
-			res.json({status:true});
-		    })
+		    //RESTORE ME
+		    //challengeuserstats.save(function(err,user){
+		    res.json({status:true});
+		    //  })
 		});
 	    }
 	})
@@ -229,7 +255,6 @@ module.exports = function(app,passport,secrets){
     
     router.get('/challengeExMatch/:userId', auth, function(req, res, next) {
 	var userId = req.params.userId;
-	console.log(userId)
 	ChallengeMatch.find({$or: [{'player_two_id':userId},{'player_one_id':userId}]},function(err, users){
 	    if(err){ return next(err); }
 	    

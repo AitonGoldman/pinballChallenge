@@ -33,7 +33,15 @@ var ChallengeUserSchema = new mongoose.Schema({
 	token        : String,
 	email        : String,
 	name         : String
-    }
+    },
+    region: String,
+    wins: Number,
+    losses: Number,
+    matches_played:  Number,
+    points: Number,
+    appRole: String,
+    challenges: [Challenge],
+    displayName: String
 });
 
 // generating a hash
@@ -128,7 +136,6 @@ var ChallengeUserStatsSchema = new mongoose.Schema({
     matches_played:  Number,
     points: Number,
     appRole: String,
-    challenges: [Challenge],
     displayName: String,
     userId: String,
     username: String
