@@ -557,11 +557,11 @@ app.controller('ChallengeController',
 				userId:user_info._id
 			    })
 			    Notification('Challenge Issued');
-			    if($scope.challenger_user.local.email === undefined){
-				return
-			    }
+//			    if($scope.challenger_user.local.email === undefined){
+//				return
+//			    }
 			    $http.post('/sendMail',{
-				to_email:$scope.challenger_user.local.email,
+				challenged:$scope.challenger_user,
 				challenger:user_info.username,
 				machine:$scope.challenger_machine.machine_name
 			    }).then(function(response){

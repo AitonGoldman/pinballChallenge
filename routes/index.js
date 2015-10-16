@@ -361,27 +361,37 @@ module.exports = function(app,passport,secrets){
 
 	// setup e-mail data with unicode symbols
 	var machine_string = req.body.machine
+	var challenged_userId = req.body.challenged.userId
 	if(machine_string !== undefined){
 	    machine_string = " on "+machine_string
 	} else {
 	    machine_string = ""
 	}
+	
 	var email_random_phrase = email_phrases[Math.floor(getRandomArbitrary(0,email_phrases.length))]
-	var mailOptions = {
-	    from: 'Pinball Challenge <pinballchallenge@gmail.com>', // sender address
-	    to: req.body.to_email, // list of receivers
-	    subject: 'You have been challenged by '+req.body.challenger+'!', // Subject line
-	    text: 'You have been challenged to a game '+machine_string+' by '+req.body.challenger+'.  '+email_random_phrase // plaintext body
-	};
 
-	// send mail with defined transport object
-	transporter.sendMail(mailOptions, function(error, info){
-	    if(error){
-		console.log(error);
-	    }else{
-		console.log('Message sent: ' + info.response);
-		res.json(info)
+	ChallengeUser.find({'_id':challenged_userId},function(err, users){
+	    if(users[0].local.email === undefined){
+		res.json({})
+		return
 	    }
+	    var mailOptions = {
+		from: 'Pinball Challenge <pinballchallenge@gmail.com>', // sender address
+		to: users[0].local.email, // list of receivers
+		subject: 'You have been challenged by '+req.body.challenger+'!', // Subject line
+		text: 'You have been challenged to a game '+machine_string+' by '+req.body.challenger+'.  '+email_random_phrase // plaintext body
+	    };
+	    
+	    // send mail with defined transport object
+	    transporter.sendMail(mailOptions, function(error, info){
+		if(error){
+		    console.log(error);
+		}else{
+		    console.log('Message sent: ' + info.response);
+		    res.json(info)
+		}
+	    })
+	    
 	})
 	
     })
