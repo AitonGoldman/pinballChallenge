@@ -403,13 +403,13 @@
 	      </div>
 	      <form ng-controller="AddMatchesController" ng-autodisable ng-autodisable-class="spinner-square" ng-submit="addMatch()" ng-use-jqlite>
 		<div class="input-group">
-		  <input type="text" ng-model="selectedPlayerOne"  typeahead="user as user.local.username for user in validUsersList | filter:{local:{username:$viewValue}}" class="form-control"  typeahead-select-on-blur="true" typeahead-no-results='noResultsPlayerOne' required>
+		  <input type="text" ng-model="selectedPlayerOne"  typeahead="user as user.displayNameHybrid for user in validUsersList | filter:{username:$viewValue}" class="form-control"  typeahead-select-on-blur="true" typeahead-no-results='noResultsPlayerOne' required>
 		  
 		  <span  class="input-group-addon" id="basic-addon2">Winning Player <span ng-if="submitted" class="badge">+{{winner_ante}}</span></span>
 		</div>
 		<br>
 		<div class="input-group">
-		  <input   type="text" ng-model="selectedPlayerTwo"  typeahead="user as user.local.username for user in validUsersList | filter:{local: {username:$viewValue}}" class="form-control" typeahead-select-on-blur="true" typeahead-no-results='noResultsPlayerTwo' required>
+		  <input   type="text" ng-model="selectedPlayerTwo"  typeahead="user as user.displayNameHybrid for user in validUsersList | filter:{username:$viewValue}" class="form-control" typeahead-select-on-blur="true" typeahead-no-results='noResultsPlayerTwo' required>
 		  <span class="input-group-addon" id="basic-addon2">Losing Player&nbsp;&nbsp; <span ng-if="submitted" class="badge">-{{loser_ante}}</span></span>
 		</div>
 		<br>
