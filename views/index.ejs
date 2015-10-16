@@ -211,13 +211,13 @@
 	      <div ng-controller="MainController">
 		<div class="panel  panel-primary">
 		  <div class="panel-heading">
-		    <span ng-if="!user.displayName">{{user.local.username}}</span>
+		    <span ng-if="!user.displayName">{{user.username}}</span>
 		    <span ng-if="user.displayName">{{user.displayName}}</span>
 		  </div>
 		  <div class="panel-body">
 		    <div>
 		      <span ng-if="user.displayName">Display Name : {{user.displayName}}<br></span>
-		      <span ng-if="!user.displayName"> Username : {{user.local.username}}<br></span>
+		      <span ng-if="!user.displayName"> Username : {{user.username}}<br></span>
 		      <span ng-if="in_profile_page && user.displayName"> Username : {{user.username}}<br></span>
 		      Wins : {{user.wins}} <br>
 		      Losses : {{user.losses}} <br>
