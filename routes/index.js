@@ -118,11 +118,6 @@ module.exports = function(app,passport,secrets){
 	ChallengeUser.find().lean().exec(function(err, users){
     	    if(err){ return next(err); }
 	    for(i in users){
-		if(users[i].displayName === undefined){
-		    users[i]['displayNameHybrid'] = users[i].local.username
-		} else {
-		    users[i]['displayNameHybrid'] = users[i].displayName
-		}
 		var challengeuserstats = new ChallengeUserStats();
 		challengeuserstats.wins = users[i].wins
 		challengeuserstats.losses = users[i].losses
@@ -252,6 +247,29 @@ module.exports = function(app,passport,secrets){
     });*/
     
     var ChallengeMatch = mongoose.model('ChallengeMatch');
+
+    router.get('/challengeMatchConvert', function(req, res, next) {	
+	fs.readFileSync('/tmp/okayToGo')
+	ChallengeUserStats.find(function(err, users){
+    	    if(err){ return next(err); }
+	    ChallengeMatch.find(function(err,matches){
+		for(match in matches){
+		    for(user in users){			
+			if(users[user].userId == matches[match].player_one_id){
+			    matches[match].player_one_id = users[user]._id
+			}
+			if(users[user].userId == matches[match].player_two_id){
+			    matches[match].player_two_id = users[user]._id
+			}
+		    }
+		    ChallengeMatch.update({_id:matches[match]._id},matches[match], function(err, user){
+			console.log('match updated '+matches[match])
+		    })
+		}
+    		res.json({});
+    	    });
+	});
+    })
     
     router.get('/challengeExMatch/:userId', auth, function(req, res, next) {
 	var userId = req.params.userId;
@@ -275,6 +293,8 @@ module.exports = function(app,passport,secrets){
 
     var ChallengeChallenge = mongoose.model('ChallengeChallenge');
 
+    
+    
     router.post('/challengeChallenge', auth, function(req, res, next) {
 	//console.log("about to create challenge")	
 	var challengechallenge = new ChallengeChallenge(req.body);
