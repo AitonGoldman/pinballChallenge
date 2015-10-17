@@ -165,7 +165,7 @@
 		      <form ng-submit="submitChallenge()" ng-autodisable ng-autodisable-class="spinner-square" ng-use-jqlite>			
 			
 			<input type="text"  ng-model="challenger_machine" typeahead="machine as machine.machine_name for machine in validMachinesList | filter:{machine_name:$viewValue}" class="form-control" typeahead-min-length="3" typeahead-select-on-blur="true" placeholder="Machine Name (optional)" typeahead-no-results="noResultsMachine" />
-			<input type="text" ng-model="challenger_user" typeahead="user as user.displayNameHybrid for user in validUsersList | filter:{displayNameHybrid:$viewValue}" class="form-control" typeahead-select-on-blur="true" placeholder="Name of Challenger" typeahead-no-results="noResultsUser" required/>
+			<input type="text" ng-model="challenger_user" typeahead="user as user.displayNameHybrid for user in validUsersList | filter:{displayNameHybrid:$viewValue}" class="form-control" typeahead-select-on-blur="true" placeholder="Name of Challenged Player" typeahead-no-results="noResultsUser" required/>
 			<button type="submit" class="btn btn-default" >
 			  Issue Challege
 			</button>
