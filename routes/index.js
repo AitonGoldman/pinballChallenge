@@ -487,7 +487,57 @@ module.exports = function(app,passport,secrets){
 	    })
 	})
     })
-				      
+
+    router.get('/challengeBadgeConvert', function(req, res, next) {	
+	fs.readFileSync('/tmp/okayToGo')
+	ChallengeUserStats.find(function(err, users){
+    	    if(err){ return next(err); }
+	    ChallengeBadge.find(function(err,badges){
+		for(badge in badges){
+		    for(user in users){			
+			if(users[user].userId == badges[badge].user_id){
+			    badges[badge].user_id = users[user]._id
+			}
+			if(users[user].userId == badges[badge].user_id){
+			    badges[badge].user_id = users[user]._id
+			}
+		    }
+		    //come back
+		    ChallengeBadge.update({_id:badges[badge]._id},badges[badge], function(err, user){
+			console.log('badge updated ')
+		    })
+		}
+    		res.json({});
+    	    });
+	});
+    })
+
+    
+    router.get('/challengeChallengeConvert', function(req, res, next) {	
+	fs.readFileSync('/tmp/okayToGo')
+	ChallengeUserStats.find(function(err, users){
+    	    if(err){ return next(err); }
+	    ChallengeChallenge.find(function(err,challenges){
+		for(challenge in challenges){
+		    for(user in users){			
+			if(users[user].userId == challenges[challenge].challenger_id){
+			    challenges[challenge].challenger_id = users[user]._id
+			}
+			if(users[user].userId == challenges[challenge].challenged_id){
+			    challenges[challenge].challenged_id = users[user]._id
+			}
+		    }
+		    //come back
+		    ChallengeChallenge.update({_id:challenges[challenge]._id},challenges[challenge], function(err, user){
+			console.log('challenge updated ')
+		    })
+		}
+    		res.json({});
+    	    });
+	});
+    })
+
+    
     
     router.post('/challengeExMatch', auth, function(req, res, next) {
 	var challengematch = new ChallengeMatch(req.body.match);
