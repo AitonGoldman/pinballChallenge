@@ -126,6 +126,27 @@
 	</div><!-- /.container-fluid -->
       </div>
       <ui-view/>
+      <script type="text/ng-template" id="/modal.html">
+	<form name="addDisplayNameToUser" 
+	      ng-submit="addDisplayName()" ng-autodisable ng-autodisable-class="spinner-square" ng-use-jqlite>
+	  
+	  <div class="modal-header">
+	    <h3 class="modal-title">YOUR ATTENTION IS NEEDED!</h3>
+	  </div>
+	  <div class="modal-body">
+	    Due to upgrades to the Pinball Challenge, you need to enter a display name.  <br>This is the name that other players will see.  <br>You will still need to use your login id to login.
+	    <br><br>
+	    <div class="input-group">
+	      <input type="text" id="displayName"
+		     ng-model="newDisplayName" class="form-control" required>
+	      <span  class="input-group-addon">Display Name</span>
+	    </div>
+	</div>
+	<div class="modal-footer">
+	  <button class="btn btn-primary" type="submit">Submit</button>
+	</div>
+	</form>	
+      </script>      
       <script type="text/ng-template" id="/challenges.html">
 	<div class="container-fluid">
 	  <div class="row">
@@ -200,6 +221,7 @@
 	      </form>
 	      <br>
 	      To create an account, click <a href="/#/application/add_users"> here </a>.
+	      <br>
 	    </div>
 	  </div>
 	</div>
@@ -247,26 +269,6 @@
 		  </div>
 		</div>
 
-		<div class="panel  panel-primary" ng-if="in_profile_page && user.displayName === undefined">
-		  <div class="panel-heading">
-		    <span>Set Display Name</span>
-		  </div>
-		  <div class="panel-body">
-		    If you want a name other than your user name to be displayed on the user list page, enter it here.
-		    Otherwise, your user name will be used.  		    
-		    <form name="addDisplayNameToUser" ng-controller="AddDisplayNameController" 
-			  ng-submit="addDisplayName()" ng-autodisable ng-autodisable-class="spinner-square" ng-use-jqlite>
-		      <div class="input-group">
-			<input type="text" id="displayName"
-			       ng-model="$parent.newDisplayName" class="form-control" required email>
-			<span  class="input-group-addon">Display Name</span>
-		      </div>
-		      <br><button class="btn btn-default" type="submit">Submit</button>
-		    </form>	      
-		  </div>
-		</div>
-
-		
 		<div  ng-controller="UserProfileMatchController">
 		  <div class="panel  panel-primary">
 		    <div class="panel-heading">

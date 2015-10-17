@@ -206,15 +206,36 @@ app.controller('ApplicationController', function ($scope,AuthService) {
 
 app.controller('LoginController', function ($scope,$rootScope,
 					    AUTH_EVENTS,AuthService,
-					    $state, Notification) {
+					    $state, Notification,
+					    $uibModal) {
     $scope.credentials = {
 	username: '',
 	password: ''
     };
+
+    var open = function (user) {	
+	var modalInstance = $uibModal.open({
+	    animation: true,
+	    templateUrl: '/modal.html',
+	    controller: 'AddDisplayNameController',
+	    backdrop: 'static',
+	    resolve: {
+		user: function () {
+		    return user;
+		}
+	    }
+	});
+    }
+    
+	
     $scope.login = function (credentials) {
 	var loginPromise = AuthService.login(credentials);
 	loginPromise.then(function (user) {
 	    $rootScope.$broadcast(AUTH_EVENTS.loginSuccess);
+	    if(user.displayName === undefined){
+		open(user)
+		return;
+	    }
 	    if($rootScope.nextState){		
 		$state.go($rootScope.nextState.name);
 	    } else {
@@ -249,20 +270,21 @@ app.controller('AddUserEmailController',
 		}])
 
 app.controller('AddDisplayNameController',
-	       ['$scope','validUsers',
-		'Notification',
-		'$q',
 		function($scope, validUsers,
-			 Notification, $q){
-		    
+			 Notification, $q,
+			 $state, 
+			 $modalInstance, user){
 		    $scope.addDisplayName = function(){
+			$modalInstance.close();
+			$scope.user = user
 			$scope.user.displayName = $scope.newDisplayName			
 			var displayNamePromise = validUsers.save($scope.user).$promise
 			displayNamePromise.then(function(data){
 			    Notification('successfully set display name')
+			    $state.go('main');
 			})
 		    }
-		}])
+		})
 
 
 app.controller('AddUserFormController',
@@ -321,7 +343,7 @@ app.controller('MachineListController',
 		       $scope.currentPage = 1;
 		   }, true);		   
 	       })
-
+	      	       
 app.controller('AddMatchesController',
 	       ['$scope', 'validMachinesList',
 		'validUsers',

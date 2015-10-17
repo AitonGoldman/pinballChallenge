@@ -67,6 +67,7 @@ module.exports = function(app,passport,secrets){
 		user.local.password='';
 		user.local.appRole='admin';
 		ChallengeUserStats.find({'userId':user._id},function(err, userstats){		    
+		    console.log(userstats[0])
 		    return res.json(userstats[0]);		    
 		})
 
@@ -202,10 +203,9 @@ module.exports = function(app,passport,secrets){
 		    if(err){ return next(err); }
 		    challengeuserstats.userId = user._id
 		    challengeuserstats.username = user.local.username
-		    //RESTORE ME
-		    //challengeuserstats.save(function(err,user){
-		    res.json({status:true});
-		    //  })
+		    challengeuserstats.save(function(err,user){
+			res.json({status:true});
+		    })
 		});
 	    }
 	})
