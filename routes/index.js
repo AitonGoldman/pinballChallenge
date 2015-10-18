@@ -116,7 +116,14 @@ module.exports = function(app,passport,secrets){
     var fs = require('fs');
     router.get('/challengeUserConvert', function(req, res, next) {	
 	fs.readFileSync('/tmp/okayToGo')
-	ChallengeUser.find().lean().exec(function(err, users){
+	ChallengeUser.find(function(err, users){
+	    for(i in users){
+		users[i].local.username = users[i].local.username.toLowerCase();
+		ChallengeUser.update({_id:users[i]._id},users[i],function(err, user){
+		    console.log('converted!')
+		})
+	    }
+	    
     	    if(err){ return next(err); }
 	    for(i in users){
 		var challengeuserstats = new ChallengeUserStats();
