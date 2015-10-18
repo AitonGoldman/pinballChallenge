@@ -197,8 +197,7 @@ module.exports = function(app,passport,secrets){
     
     
     router.post('/challengeUser', function(req, res, next) {
-	//console.log(req);
-	ChallengeUser.findOne({ 'local.username' :  req.body.local.username }, function(err, user) {
+	ChallengeUser.findOne({ 'local.username' :  req.body.local.username.toLowerCase() }, function(err, user) {
 	    if (user) {
 		res.json({status:false})
 	    } else {

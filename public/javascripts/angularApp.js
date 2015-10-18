@@ -353,9 +353,7 @@ app.controller('ChangePasswordController',
 			 messageCenterService, Notification,
 			 $state, $q,
 			 $http, $cookies){
-
 		    
-		    //come back
 		    var user_info = $cookies.getObject('user_info');
 		    $scope.changePassword = function(oldPassword,newPassword){
 			$http.put('/changePassword',{_id:user_info._id,oldPassword:oldPassword,newPassword:newPassword}).then(function(data){
