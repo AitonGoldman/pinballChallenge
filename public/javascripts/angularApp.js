@@ -344,6 +344,31 @@ app.controller('ForgotFormController',
 		}
 	       ]);
 
+app.controller('ChangePasswordController',
+	       ['$scope','validUsers',
+		'messageCenterService','Notification',
+		'$state','$q',
+		'$http','$cookies',
+		function($scope, validUsers,
+			 messageCenterService, Notification,
+			 $state, $q,
+			 $http, $cookies){
+
+		    
+		    //come back
+		    var user_info = $cookies.getObject('user_info');
+		    $scope.changePassword = function(oldPassword,newPassword){
+			$http.put('/changePassword',{_id:user_info._id,oldPassword:oldPassword,newPassword:newPassword}).then(function(data){
+			    $state.go('main');
+			    Notification('Password has been changed!')
+			}, function(data){
+			    Notification.error('Password has NOT been changed!  <br>Make sure you have your current password correct.')
+			})			
+		    }
+		}
+	       ]);
+
+
 app.controller('MachineListController',
 	       function ($scope,filterFilter,
 			 validMachinesList){
@@ -811,6 +836,13 @@ app.config([
 	}).state('forgot', {
 	    url: '/forgot',
 	    templateUrl: '/forgot.html',
+	    parent: 'application',
+	    resolve: { test: function(){
+		fuckit();
+	    }}
+	}).state('change_password', {
+	    url: '/change_password',
+	    templateUrl: '/change_password.html',
 	    parent: 'application',
 	    resolve: { test: function(){
 		fuckit();

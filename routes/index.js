@@ -128,7 +128,7 @@ module.exports = function(app,passport,secrets){
 		challengeuserstats.userId = users[i]._id
 		challengeuserstats.username = users[i].local.username
 		challengeuserstats.save(function(err, user){
-		    console.log('okie dokie')
+		    console.log('okie dokie')		    
 		})
 	    }
     	    res.json(challengeuserstats);
@@ -390,10 +390,31 @@ module.exports = function(app,passport,secrets){
     });
     
 
+    router.put('/changePassword',auth, function(req,res,next){
+	var userid = req.body._id
+	var oldpassword = req.body.oldPassword
+	var newpassword = req.body.newPassword
+
+	ChallengeUserStats.find({'_id':userid},function(err, userstats){
+	    if(userstats.length == 0){
+		res.send(400);
+		return
+	    }
+	    ChallengeUser.find({'_id':userstats[0].userId},function(err, users){
+		if(!users[0].validPassword(oldpassword)){
+		    res.send(400);
+		    return
+		}
+		var newpasswordcrypt = users[0].generateHash(newpassword);   
+		users[0].local.password = newpasswordcrypt
+		ChallengeUser.update({_id:userstats[0].userId}, users[0], function(err,user){
+		    res.json({})
+		})		
+	    })	    
+	})
+    })
+
     router.get('/email/:email',function(req,res,next){
-	//find user that matches email - done
-	//change password to randomly selected password - done
-	//send email
 	var nodemailer = require('nodemailer');
 
 	// create reusable transporter object using SMTP transport
