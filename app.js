@@ -41,7 +41,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 
-app.use(session({ secret: 'ilovescotchscotchyscotchscotch' , cookie: { httpOnly: false }})); // session secret
+app.use(session({ secret: secrets.cookie_secret , cookie: { httpOnly: false , maxAge: 18000000}})); // session secret
 app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions
 app.use(flash()); // use connect-flash for flash messages stored in session
