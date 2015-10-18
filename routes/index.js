@@ -390,6 +390,64 @@ module.exports = function(app,passport,secrets){
     });
     
 
+    router.get('/email/:email',function(req,res,next){
+	//find user that matches email - done
+	//change password to randomly selected password - done
+	//send email
+	var nodemailer = require('nodemailer');
+
+	// create reusable transporter object using SMTP transport
+	var transporter = nodemailer.createTransport({
+	    service: 'Gmail',
+	    auth: {
+		user: 'pinballchallenge@gmail.com',
+		pass: secrets.google_account_password
+	    }
+	});
+
+	// NB! No need to recreate the transporter object. You can use
+	// the same transporter object for all e-mails
+	
+	var email = req.params.email;
+	ChallengeUser.find({'local.email':email},function(err, users){
+	    if(users.length == 0){
+		res.json({})
+		return
+	    }
+	    var challengeuser = new ChallengeUser(users[0]);
+	    //challengeuser.appRole = 'admin';
+	    pass_gen_arr_length = secrets.password_generator_list.length
+	    var passwordPhrase1 = secrets.password_generator_list[Math.floor(getRandomArbitrary(0,pass_gen_arr_length))]
+	    var passwordPhrase2 = secrets.password_generator_list[Math.floor(getRandomArbitrary(0,pass_gen_arr_length))]
+	    var passwordPhrase3 = secrets.password_generator_list[Math.floor(getRandomArbitrary(0,pass_gen_arr_length))]
+	    var new_password = passwordPhrase1+passwordPhrase2+passwordPhrase3
+	    challengeuser.local.password = challengeuser.generateHash(new_password);
+	    console.log(new_password)
+	    ChallengeUser.update({_id:challengeuser._id}, challengeuser, function(err,user){
+		if(err){ return next(err); }
+		
+		var mailOptions = {
+		    from: 'Pinball Challenge <pinballchallenge@gmail.com>', // sender address
+		    to: challengeuser.local.email, // list of receivers
+		    subject: 'Your password on Pinball Challenge has been reset!', // Subject line
+		    text: 'A password reset request has been made.  The password for user '+challengeuser.local.username+' has been reset to the following : \n\n\n'+new_password+'\n\n\nIf you want to change this password, you can do so on your profile page.'
+		};
+		
+		// send mail with defined transport object
+		transporter.sendMail(mailOptions, function(error, info){
+		    if(error){
+			console.log(error);
+		    }else{
+			console.log('Message sent: ' + info.response);
+		    }
+		})
+		
+	    	console.log('saved!')
+	    })
+	    res.json({})
+	})
+    })
+	       
     router.post('/sendMail',auth,function(req,res,next){
 	var nodemailer = require('nodemailer');
 
@@ -503,7 +561,6 @@ module.exports = function(app,passport,secrets){
 			    badges[badge].user_id = users[user]._id
 			}
 		    }
-		    //come back
 		    ChallengeBadge.update({_id:badges[badge]._id},badges[badge], function(err, user){
 			console.log('badge updated ')
 		    })
@@ -528,7 +585,6 @@ module.exports = function(app,passport,secrets){
 			    challenges[challenge].challenged_id = users[user]._id
 			}
 		    }
-		    //come back
 		    ChallengeChallenge.update({_id:challenges[challenge]._id},challenges[challenge], function(err, user){
 			console.log('challenge updated ')
 		    })

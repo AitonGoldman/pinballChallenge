@@ -134,7 +134,7 @@
 	    <h3 class="modal-title">YOUR ATTENTION IS NEEDED!</h3>
 	  </div>
 	  <div class="modal-body">
-	    Due to upgrades to the Pinball Challenge site, you need to set a display name.  <br>The display name is the name that other players will see.  <br>You will still need to use your login id to login.  
+	    Due to upgrades to the Pinball Challenge site, you need to set a display name.  <br>The display name is the name that other players will see.  <br>You will still need to use your login id (i.e. the id you just used to login) to login.  
 	    <br><br>
 	    <div class="input-group">
 	      <input type="text" id="displayName"
@@ -220,7 +220,8 @@
 		<button class="btn btn-default" type="submit">Login</button>
 	      </form>
 	      <br>
-	      To create an account, click <a href="/#/application/add_users"> here </a>.
+	      To create an account, click <a href="/#/application/add_users"> here </a>.<br><br>
+	      To reset your password, click <a href="#/application/forgot"> here </a>
 	      <br>
 	    </div>
 	  </div>
@@ -328,6 +329,30 @@
 		<span style='color:red'><small>(Optional)</small></span>
 		<br>
 		<button class="btn btn-default" type="submit">Create Account</button>
+	      </form>
+	    </div>
+	  </div>
+	</div>
+	
+      </script>
+      <script type="text/ng-template" id="/forgot.html">
+	<div class="container-fluid">
+	  <div class="row">
+	    <div class="col-md-6 col-md-offset-3">
+	      <br>
+	      Enter your email address.  If you have an account on Pinball Challenge, and you will be emailed with
+	      you login name and a new password.
+	      <br>
+	      <br>
+	      <form name="forgotForm" ng-controller="ForgotFormController"
+		    ng-submit="forgotPassword(email_address)" ng-autodisable ng-autodisable-class="spinner-square" ng-use-jqlite>
+		<div class="input-group">
+		  <input type="text" id="emailAddress"
+			 ng-model="email_address" class="form-control" email required>
+		  <span  class="input-group-addon" id="basic-addon1">Email Address</span>
+		</div>
+		<br>
+		<button class="btn btn-default" type="submit">Make It So!</button>
 	      </form>
 	    </div>
 	  </div>

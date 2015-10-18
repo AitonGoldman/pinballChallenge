@@ -324,6 +324,26 @@ app.controller('AddUserFormController',
 		}
 	       ]);
 
+app.controller('ForgotFormController',
+	       ['$scope','validUsers',
+		'messageCenterService','Notification',
+		'$state','$q',
+		'$http',
+		function($scope, validUsers,
+			 messageCenterService, Notification,
+			 $state, $q,
+			 $http){
+		    
+		    $scope.forgotPassword = function(email_address){
+			$http.get('/email/'+email_address).then(function(data){
+			    console.log('password has been reset')
+			    $state.go('login');
+			    Notification('Password reset request has been sent!')
+			})			
+		    }
+		}
+	       ]);
+
 app.controller('MachineListController',
 	       function ($scope,filterFilter,
 			 validMachinesList){
@@ -784,6 +804,13 @@ app.config([
 	}).state('about', {
 	    url: '/about',
 	    templateUrl: '/about.html',
+	    parent: 'application',
+	    resolve: { test: function(){
+		fuckit();
+	    }}
+	}).state('forgot', {
+	    url: '/forgot',
+	    templateUrl: '/forgot.html',
 	    parent: 'application',
 	    resolve: { test: function(){
 		fuckit();
