@@ -125,6 +125,7 @@ app.factory('AuthService', function ($http, $cookies, Notification, $resource) {
     var authService = {};
     
     authService.login = function (credentials) {
+	credentials.username = 	credentials.username.toLowerCase();
 	return $http
 	    .post('/login', credentials)
 	    .then(function (res) {

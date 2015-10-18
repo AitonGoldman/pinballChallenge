@@ -198,6 +198,7 @@ module.exports = function(app,passport,secrets){
 		var challengeuser = new ChallengeUser(req.body);
 		var challengeuserstats = new ChallengeUserStats(req.body);
 		//challengeuser.appRole = 'admin';
+		challengeuser.local.username = challengeuser.local.username.toLowerCase();
 		challengeuser.local.password = challengeuser.generateHash(challengeuser.local.password);
 		challengeuser.save(function(err, user){
 		    if(err){ return next(err); }
