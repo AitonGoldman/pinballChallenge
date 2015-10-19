@@ -583,8 +583,9 @@ app.controller('ChallengeController',
 		    $scope.validChallenges = validChallenges.get({userId:user_info._id})
 
 		    $scope.validChallenges.$promise.then(function(data){
-			$scope.validUserChallengedTotalItem = filterFilter(data,{challenged_id:user_info._id}).length;
+			$scope.validUserChallengedTotalItems = filterFilter(data,{challenged_id:user_info._id}).length;
 			$scope.validUserChallengesTotalItems = filterFilter(data,{challenger_id:user_info._id}).length;
+			console.log($scope.validUserChallengedTotalItem+ " is number of challenged")
 		    })
 		    
 		    $scope.submitChallenge = function(){
