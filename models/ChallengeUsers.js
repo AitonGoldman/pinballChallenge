@@ -82,6 +82,7 @@ mongoose.model('ChallengeBadge', ChallengeBadgeSchema);
 
 var ChallengeMatchSchema = new mongoose.Schema({
     machine_name: String,
+    machine_id: String,
     player_one_user_name: String,
     player_two_user_name: String,
     player_winner: String,

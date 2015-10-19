@@ -88,6 +88,7 @@ module.exports = function(app,passport,secrets){
     var ChallengeBadgeDef = mongoose.model('ChallengeBadgeDef');
 
     router.get('/testBadgeDefInit', function(req, res, next) {
+	fs.readFileSync('/tmp/okayToGo')
 	var challengebadgedefs = [
 	    new ChallengeBadgeDef({
 		badge_def_eval_string:
@@ -99,7 +100,7 @@ module.exports = function(app,passport,secrets){
 	    }),
 	    new ChallengeBadgeDef({
 		badge_def_eval_string:
-		' var seq_count = 0; for(i in matches){ if(matches.player_two_id == user._id){ seq_count = 0; } else { seq_count = seq_count + 1; }  if(seq_count == 5){  return true; } } return false;',
+		' var seq_count = 0; for(i in matches){ if(matches[i].player_two_id == user._id){ seq_count = 0; } else { seq_count = seq_count + 1; }  if(seq_count == 5){  return true; } } return false;',
 		badge_img_url:
 		'/images/roll_24.png',
 		mouseover_string:
@@ -107,16 +108,36 @@ module.exports = function(app,passport,secrets){
 	    }),
 	    new ChallengeBadgeDef({
 		badge_def_eval_string:
-		' var seq_count = 0; for(i in matches){ if(matches.player_two_id == user._id){ seq_count = 0; } else { seq_count = seq_count + 1; }  if(seq_count == 10){  return true; } } return false;',
+		' var seq_count = 0; for(i in matches){ if(matches[i].player_two_id == user._id){ seq_count = 0; } else { seq_count = seq_count + 1; }  if(seq_count == 10){  return true; } } return false;',
 		badge_img_url:
 		'/images/fire_24.png',
 		mouseover_string:
 		'On fire!<br>This badge is awarded for winning 10 matches in a row'
-	    })
-	    //machine badges : transformers, addams, tommy
-	    //people(specific) : doug polka, al thomka
-	    //david and goliath
-	    //beating a rival
+	    }),
+	    new ChallengeBadgeDef({
+		badge_def_eval_string:
+		' for(i in matches){ if((matches[i].player_two_id == user._id || matches[i].player_one_id == user._id) && (matches[i].machine_id == 5709)){ return true; }} return false;',
+		badge_img_url:
+		'/images/transformers_24.png',
+		mouseover_string:
+		'Transform and Roll Out!<br>This badge is awarded for playing a game on Transformers'
+	    }),
+	    new ChallengeBadgeDef({
+		badge_def_eval_string:
+		' for(i in matches){ if((matches[i].player_two_id == user._id || matches[i].player_one_id == user._id) && (matches[i].machine_id == 20)){ return true; }} return false;',
+		badge_img_url:
+		'/images/pool_24.png',
+		mouseover_string:
+		'Dirty Pool Old Man!!<br>This badge is awarded for playing a game on The Addams Family'
+	    }),
+	    new ChallengeBadgeDef({
+		badge_def_eval_string:
+		' for(i in matches){ if((matches[i].player_two_id == user._id || matches[i].player_one_id == user._id) && (matches[i].machine_id == 5150)){ return true; }} return false;',
+		badge_img_url:
+		'/images/magic_24.png',
+		mouseover_string:
+		'You are a pinball wizard!!<br>This badge is awarded for playing a game on Tommy'
+	    })	    
 	];
 	for(badge in challengebadgedefs){
 	    challengebadgedefs[badge].save(function(err, user){

@@ -503,8 +503,9 @@ app.controller('AddMatchesController',
 	      			player_two_user_name:$scope.match_loser.displayNameHybrid,
 	      			player_two_id:$scope.match_loser._id,
 	      			machine_name:$scope.selectedMachine.machine_name,
+				machine_id:$scope.selectedMachine._id,
 	      			player_winner:$scope.match_winner.displayNameHybrid,
-				dateOfMatch: new Date().getTime()						  
+				dateOfMatch: new Date().getTime()
 			    }
 			},function(){
 			    $scope.submitted = true;
@@ -585,7 +586,6 @@ app.controller('ChallengeController',
 		    $scope.validChallenges.$promise.then(function(data){
 			$scope.validUserChallengedTotalItems = filterFilter(data,{challenged_id:user_info._id}).length;
 			$scope.validUserChallengesTotalItems = filterFilter(data,{challenger_id:user_info._id}).length;
-			console.log($scope.validUserChallengedTotalItem+ " is number of challenged")
 		    })
 		    
 		    $scope.submitChallenge = function(){
@@ -630,9 +630,15 @@ app.controller('ChallengeController',
 				userId:user_info._id
 			    })
 			    Notification('Challenge Issued');
-//			    if($scope.challenger_user.local.email === undefined){
-//				return
-//			    }
+			    $scope.validChallenges = validChallenges.get({userId:user_info._id})
+			    $scope.validChallenges.$promise.then(function(data){
+				$scope.validUserChallengedTotalItems = filterFilter(data,{challenged_id:user_info._id}).length;
+				$scope.validUserChallengesTotalItems = filterFilter(data,{challenger_id:user_info._id}).length;
+			    })
+			    
+			    //			    if($scope.challenger_user.local.email === undefined){
+			    //				return
+			    //			    }
 			    $http.post('/sendMail',{
 				challenged:$scope.challenger_user,
 				challenger:user_info.username,
