@@ -99,7 +99,7 @@ module.exports = function(app,passport,secrets){
 	    }),
 	    new ChallengeBadgeDef({
 		badge_def_eval_string:
-		' console.log("in eval"); console.log(matches); var seq_count = 0; for(i in matches){ if(matches.player_two_id == user._id){ seq_count = 0; } else { seq_count = seq_count + 1; }  if(seq_count == 5){  return true; } } return false;',
+		' var seq_count = 0; for(i in matches){ if(matches.player_two_id == user._id){ seq_count = 0; } else { seq_count = seq_count + 1; }  if(seq_count == 5){  return true; } } return false;',
 		badge_img_url:
 		'/images/roll_24.png',
 		mouseover_string:
@@ -107,12 +107,16 @@ module.exports = function(app,passport,secrets){
 	    }),
 	    new ChallengeBadgeDef({
 		badge_def_eval_string:
-		' console.log("in eval"); console.log(matches); var seq_count = 0; for(i in matches){ if(matches.player_two_id == user._id){ seq_count = 0; } else { seq_count = seq_count + 1; }  if(seq_count == 10){  return true; } } return false;',
+		' var seq_count = 0; for(i in matches){ if(matches.player_two_id == user._id){ seq_count = 0; } else { seq_count = seq_count + 1; }  if(seq_count == 10){  return true; } } return false;',
 		badge_img_url:
 		'/images/fire_24.png',
 		mouseover_string:
 		'On fire!<br>This badge is awarded for winning 10 matches in a row'
 	    })
+	    //machine badges : transformers, addams, tommy
+	    //people(specific) : doug polka, al thomka
+	    //david and goliath
+	    //beating a rival
 	];
 	for(badge in challengebadgedefs){
 	    challengebadgedefs[badge].save(function(err, user){
