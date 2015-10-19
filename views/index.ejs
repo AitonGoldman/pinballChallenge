@@ -248,7 +248,12 @@
 		      <span style='color:red' ng-if="not_rank"> Rank : NOT RANKED (less than 5 matches played)<br></span>
 		      <span ng-if="not_rank == false"> Rank : {{rank}}<br></span>
 		      Points : {{user.points}}<br>
-		      <span ng-if="in_profile_page">Email Address : {{email_address.email}}</span>
+		      <span ng-if="in_profile_page">Email Address : {{email_address.email}}<br></span>
+		      Badges : 
+		      <span ng-repeat="badge in badges|filter: user._id">
+			<img uib-tooltip-html="badge.mouseover_string" width=25 src='{{badge.badge_img_url}}'>
+		      </span>
+
 		    </div>
 		  </div>
 		</div>
@@ -429,9 +434,9 @@
 		    <span ng-if="validUser.matches_played < 5" style='background-color:red' class="badge">{{validUser.points}}</span>
 		    <span>
 		      <a href='/#/application/user/{{validUser._id}}'>{{validUser.displayNameHybrid}}</a>
-		      <span ng-repeat="badge in badges|filter: validUser._id">
+<!--		      <span ng-repeat="badge in badges|filter: validUser._id">
 			<img uib-tooltip-html="badge.mouseover_string" width=25 src='{{badge.badge_img_url}}'>
-		      </span>
+		      </span> -->
 		    </span>
 		    <span ng-if="validUser.matches_played < 5" style='color:red'><small>(less than 5 matches)</small></span>
 		  </li>

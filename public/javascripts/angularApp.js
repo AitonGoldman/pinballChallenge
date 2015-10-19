@@ -646,14 +646,14 @@ app.controller('MainController',
 		'$state', 'Notification',
 		'$stateParams',	'filterFilter',
 		'orderByFilter', '$q',
-		'validEmails',
+		'validEmails','challengeBadges',
 		function($scope, AuthService,
 			 $cookies, validUsers,
 			 validMachinesList,
 			 $state, Notification,
 			 $stateParams, filterFilter,
 			 orderByFilter, $q,
-			 validEmails){
+			 validEmails, challengeBadges){
 		    var user_info = $cookies.getObject('user_info');
 		    if(user_info === undefined){
 			$state.go('login');
@@ -685,6 +685,7 @@ app.controller('MainController',
 			} else {
 			    $scope.user = filterFilter($scope.validUsersList, $scope.user_id)[0];
 			}
+			$scope.badges = challengeBadges;
 
 			var filtered = orderByFilter($scope.validUsersList,"-points")
 			$scope.rank = 1			

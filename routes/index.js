@@ -86,20 +86,41 @@ module.exports = function(app,passport,secrets){
     var mongoose = require('mongoose');
 
     var ChallengeBadgeDef = mongoose.model('ChallengeBadgeDef');
+
     router.get('/testBadgeDefInit', function(req, res, next) {
-	var challengebadgedef = new ChallengeBadgeDef({
-	    badge_def_eval_string:
-	    'return user.matches_played > 0',
-	    badge_img_url:
-	    'https://cdn3.iconfinder.com/data/icons/beos/BeOS_person.png',
-	    mouseover_string:
-	    'Welcome to the party pal!<br>This badge is awarded for playing your first match'
-	});
-	challengebadgedef.save(function(err, user){
-	    console.log('inserted badge def')
-	    //FIXME : need to return something usefull
-	    res.json({})
-	})
+	var challengebadgedefs = [
+	    new ChallengeBadgeDef({
+		badge_def_eval_string:
+		'return user.matches_played > 0',
+		badge_img_url:
+		'/images/ballons_24.png',
+		mouseover_string:
+		'Welcome to the party pal!<br>This badge is awarded for playing your first match'
+	    }),
+	    new ChallengeBadgeDef({
+		badge_def_eval_string:
+		' console.log("in eval"); console.log(matches); var seq_count = 0; for(i in matches){ if(matches.player_two_id == user._id){ seq_count = 0; } else { seq_count = seq_count + 1; }  if(seq_count == 5){  return true; } } return false;',
+		badge_img_url:
+		'/images/roll_24.png',
+		mouseover_string:
+		'On a roll!<br>This badge is awarded for winning 5 matches in a row'
+	    }),
+	    new ChallengeBadgeDef({
+		badge_def_eval_string:
+		' console.log("in eval"); console.log(matches); var seq_count = 0; for(i in matches){ if(matches.player_two_id == user._id){ seq_count = 0; } else { seq_count = seq_count + 1; }  if(seq_count == 10){  return true; } } return false;',
+		badge_img_url:
+		'/images/fire_24.png',
+		mouseover_string:
+		'On fire!<br>This badge is awarded for winning 10 matches in a row'
+	    })
+	];
+	for(badge in challengebadgedefs){
+	    challengebadgedefs[badge].save(function(err, user){
+		console.log('inserted badge def')
+		//FIXME : need to return something usefull
+	    })
+	}
+	res.json({})
     });
 
     var ChallengeBadge = mongoose.model('ChallengeBadge');
@@ -540,33 +561,36 @@ module.exports = function(app,passport,secrets){
     //FIXME : need to clean this up
     router.get('/badgeCheck/:userId', auth, function(req, res, next) {
 	var userId = req.params.userId;
+	console.log(userId+" is the userid for this badge")
     	var challengebadgedefpromise = ChallengeBadgeDef.find();
 	challengebadgedefpromise.then(function(badgedefs){
 	    var challengebadgepromise = ChallengeBadge.find();
 	    challengebadgepromise.then(function(playerbadges){
 		ChallengeUserStats.find({'_id':userId},function(err, users){
-		    for(badgedef in badgedefs){
-			evalFunc = new Function("user","matches",badgedefs[badgedef].badge_def_eval_string)
-			if(evalFunc(users[0],{})){
-			    var newchallengebadge = new ChallengeBadge({
-				user_id:users[0]._id,
-				badge_id:badgedefs[badgedef]._id,
-				badge_img_url:badgedefs[badgedef].badge_img_url,
-				mouseover_string:badgedefs[badgedef].mouseover_string
-			    });
-			    ChallengeBadge.find({$and : [{'user_id':userId},
-							 {'badge_id':badgedefs[badgedef]._id}]
-						},function(err,badges){
-						    if(badges.length == 0){
-							newchallengebadge.save(function(err,thing){
-							    console.log('badge saved')
-							});
-						    }
-						})
-			} else {
-			    console.log('badge has NOT been added')
+		    ChallengeMatch.find({$or: [{'player_two_id':users[0]._id},{'player_one_id':users[0]._id}]},function(err, matches){
+//		    ChallengeMatch.find({'_id':userId},function(err, matches){
+			for(badgedef in badgedefs){
+			    evalFunc = new Function("user","matches",badgedefs[badgedef].badge_def_eval_string)
+			    if(evalFunc(users[0],matches)){
+				var newchallengebadge = new ChallengeBadge({
+				    user_id:users[0]._id,
+				    badge_id:badgedefs[badgedef]._id,
+				    badge_img_url:badgedefs[badgedef].badge_img_url,
+				    mouseover_string:badgedefs[badgedef].mouseover_string
+				});
+				ChallengeBadge.find({$and : [{'user_id':userId},
+							     {'badge_id':badgedefs[badgedef]._id}]
+						    },function(err,badges){
+							if(badges.length == 0){
+							    newchallengebadge.save(function(err,thing){
+							    });
+							}
+						    })
+			    } else {
+
+			    }
 			}
-		    }
+		    })
 		    //FIXME : need to return something usefull
 		    res.json({})
 		})
@@ -583,10 +607,13 @@ module.exports = function(app,passport,secrets){
 		    for(user in users){			
 			if(users[user].userId == badges[badge].user_id){
 			    badges[badge].user_id = users[user]._id
+			    badges[badge].badge_img_url = '/images/ballons_24.png'
+			    console.log('badge updated - yay ')
 			}
-			if(users[user].userId == badges[badge].user_id){
-			    badges[badge].user_id = users[user]._id
-			}
+			
+//			if(users[user].userId == badges[badge].user_id){
+//			    badges[badge].user_id = users[user]._id
+//			}
 		    }
 		    ChallengeBadge.update({_id:badges[badge]._id},badges[badge], function(err, user){
 			console.log('badge updated ')
