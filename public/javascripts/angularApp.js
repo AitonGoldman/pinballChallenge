@@ -133,7 +133,13 @@ app.factory('AuthService', function ($http, $cookies, Notification, $resource) {
 		//        we get back a 401 if login failed, so maybe not?
 		$cookies.remove('user_info');
 		//		$cookies.putObject('user_info',{_id:res.data._id,username:res.data.local.username})
-		$cookies.putObject('user_info',{_id:res.data._id,username:res.data.username})
+		displayNameHybrid = ''
+		if(res.data.displayName === undefined){
+		    displayNameHybrid = res.data.username
+		} else {
+		    displayNameHybrid = res.data.displayName
+		}
+		$cookies.putObject('user_info',{_id:res.data._id,username:res.data.username, displayNameHybrid:displayNameHybrid})
 		$http.get('/static_json/motd.json').then(function(data){
 		    //		    Notification({message:data.data.message,delay:10000})
 		    Notification({message: "Welcome to the terror dome! ",delay:10000})
