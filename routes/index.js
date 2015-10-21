@@ -520,7 +520,53 @@ module.exports = function(app,passport,secrets){
 	    res.json({})
 	})
     })
-	       
+
+    router.get('/forgotLoginId/:email',function(req,res,next){
+	var nodemailer = require('nodemailer');
+
+	// create reusable transporter object using SMTP transport
+	var transporter = nodemailer.createTransport({
+	    service: 'Gmail',
+	    auth: {
+		user: 'pinballchallenge@gmail.com',
+		pass: secrets.google_account_password
+	    }
+	});
+
+	// NB! No need to recreate the transporter object. You can use
+	// the same transporter object for all e-mails
+	
+	var email = req.params.email;
+	ChallengeUser.find({'local.email':email},function(err, users){
+	    if(users.length == 0){
+		res.json({})
+		return
+	    }
+	    var challengeuser = new ChallengeUser(users[0]);
+	    
+	    var mailOptions = {
+		from: 'Pinball Challenge <pinballchallenge@gmail.com>', // sender address
+		to: challengeuser.local.email, // list of receivers
+		subject: 'Your login id on Pinball Challenge!', // Subject line
+		text: 'Your login id is  '+challengeuser.local.username
+	    };
+	    
+	    // send mail with defined transport object
+	    transporter.sendMail(mailOptions, function(error, info){
+		if(error){
+		    console.log(error);
+		}else{
+		    console.log('Message sent: ' + info.response);
+		}
+	    })
+	    
+	    console.log('saved!')
+	})
+	res.json({})
+    })
+
+
+    
     router.post('/sendMail',auth,function(req,res,next){
 	var nodemailer = require('nodemailer');
 

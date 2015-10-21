@@ -350,6 +350,26 @@ app.controller('ForgotFormController',
 		}
 	       ]);
 
+app.controller('ForgotLoginIdFormController',
+	       ['$scope','validUsers',
+		'messageCenterService','Notification',
+		'$state','$q',
+		'$http',
+		function($scope, validUsers,
+			 messageCenterService, Notification,
+			 $state, $q,
+			 $http){
+		    
+		    $scope.forgotLoginId = function(email_address){
+			$http.get('/forgotLoginId/'+email_address).then(function(data){
+			    console.log('login id has been emailed')
+			    $state.go('login');
+			    Notification('Login in has been emailed!')
+			})			
+		    }
+		}
+	       ]);
+
 app.controller('ChangePasswordController',
 	       ['$scope','validUsers',
 		'messageCenterService','Notification',
@@ -848,6 +868,13 @@ app.config([
 	}).state('forgot', {
 	    url: '/forgot',
 	    templateUrl: '/forgot.html',
+	    parent: 'application',
+	    resolve: { test: function(){
+		fuckit();
+	    }}
+	}).state('forgot_login_id', {
+	    url: '/forgot_login_id',
+	    templateUrl: '/forgot_login_id.html',
 	    parent: 'application',
 	    resolve: { test: function(){
 		fuckit();

@@ -221,7 +221,8 @@
 	      </form>
 	      <br>
 	      To create an account, click <a href="/#/application/add_users"> here </a>.<br><br>
-	      To reset your password, click <a href="#/application/forgot"> here </a>
+	      To reset your password, click <a href="#/application/forgot"> here </a><br><br>
+	      To get your login id emailed to you, click <a href="#/application/forgot_login_id"> here </a>
 	      <br>
 	    </div>
 	  </div>
@@ -363,6 +364,30 @@
 	  </div>
 	</div>	
       </script>
+      <script type="text/ng-template" id="/forgot_login_id.html">
+	<div class="container-fluid">
+	  <div class="row">
+	    <div class="col-md-6 col-md-offset-3">
+	      <br>
+	      Enter your email address.  If you have an account on Pinball Challenge, and you will be emailed with
+	      you login name.
+	      <br>
+	      <br>
+	      <form name="forgotLoginIdForm" ng-controller="ForgotLoginIdFormController"
+		    ng-submit="forgotLoginId(email_address)" ng-autodisable ng-autodisable-class="spinner-square" ng-use-jqlite>
+		<div class="input-group">
+		  <input type="text" id="emailAddress"
+			 ng-model="email_address" class="form-control" email required>
+		  <span  class="input-group-addon" id="basic-addon1">Email Address</span>
+		</div>
+		<br>
+		<button class="btn btn-default" type="submit">Make It So!</button>
+	      </form>
+	    </div>
+	  </div>
+	</div>	
+      </script>
+
       <script type="text/ng-template" id="/change_password.html">
 	<div class="container-fluid">
 	  <div class="row">
