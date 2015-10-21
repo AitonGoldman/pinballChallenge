@@ -362,9 +362,13 @@ app.controller('ForgotLoginIdFormController',
 		    
 		    $scope.forgotLoginId = function(email_address){
 			$http.get('/forgotLoginId/'+email_address).then(function(data){
-			    console.log('login id has been emailed')
-			    $state.go('login');
-			    Notification('Login in has been emailed!')
+			    console.log('login id has been emailed '+data.data.email_status)
+			    if(data.data.email_status=='nojoy'){				
+				Notification.error('Pinball challenge does not know about this email address.  Please check to make sure you enterered the correct address')
+			    } else {
+				$state.go('login');
+				Notification('Your login id will be emailed to you shortly!')				
+			    }
 			})			
 		    }
 		}

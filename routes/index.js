@@ -539,8 +539,10 @@ module.exports = function(app,passport,secrets){
 	var email = req.params.email;
 	ChallengeUser.find({'local.email':email},function(err, users){
 	    if(users.length == 0){
-		res.json({})
+		res.json({email_status:'nojoy'})
 		return
+	    } else {
+		console.log(users)
 	    }
 	    var challengeuser = new ChallengeUser(users[0]);
 	    
@@ -559,10 +561,9 @@ module.exports = function(app,passport,secrets){
 		    console.log('Message sent: ' + info.response);
 		}
 	    })
-	    
-	    console.log('saved!')
+	    res.json({email_status:'joy'})	    
+	    console.log('saved!')	    
 	})
-	res.json({})
     })
 
 
